@@ -17,6 +17,8 @@ import com.example.wastelessapp.screens.SettingsScreen
 import com.example.wastelessapp.screens.ShoppingListScreen
 import com.example.wastelessapp.screens.StatisticsScreen
 
+//!! Send route for navHost/navController everywhere for better navigation
+
 @Composable
 fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
@@ -31,6 +33,7 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
 //                horizontalAlignment = Alignment.CenterHorizontally
 //            ) {
 //                //TODO should switch current selection of bottom bar, now opens food screen as another screen
+
 //                Button(onClick = {
 //                    navController.navigate(FoodScreen)
 //                }) {

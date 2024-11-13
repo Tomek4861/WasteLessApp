@@ -100,13 +100,7 @@ class MainActivity : ComponentActivity() {
                             selectedItemIndex = selectedItemIndex,
                             onItemSelected = {index, route ->
                                 selectedItemIndex = index
-                                navController.navigate(route) {
-                                    popUpTo(navController.graph.startDestinationId) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                                navController.navigate(route)
                             }
                         )
                     }
