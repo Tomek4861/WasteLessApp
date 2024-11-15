@@ -18,4 +18,9 @@ fun SettingsScreen() {
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center
     )
+    Text(
+        "This is the settings screen",
+        fontSize = 20.sp,
+        textAlign = TextAlign.Center
+    )
 }
