@@ -85,7 +85,7 @@ fun ShoppingListItem(item: ShoppingItem) {
         Icon(
             imageVector = item.icon,
             contentDescription = item.category,
-            tint = Color.Black,
+
             modifier = Modifier.size(48.dp)
         )
         Column(

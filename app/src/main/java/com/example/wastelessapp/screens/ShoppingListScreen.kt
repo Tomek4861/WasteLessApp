@@ -14,12 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.wastelessapp.ui.components.BlackButton
 import com.example.wastelessapp.ui.components.CustomTopAppBar
 import com.example.wastelessapp.ui.components.FoodUnit
+import com.example.wastelessapp.ui.components.PrimaryButton
+import com.example.wastelessapp.ui.components.SecondaryButton
 import com.example.wastelessapp.ui.components.ShoppingItem
 import com.example.wastelessapp.ui.components.ShoppingListItem
-import com.example.wastelessapp.ui.components.WhiteButton
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -46,13 +46,13 @@ fun ShoppingListScreen() {
             horizontalArrangement = Arrangement.SpaceBetween,
 
             ) {
-            WhiteButton(
+            SecondaryButton(
                 text = "Sort by Type",
                 onClick = { /*TODO*/ },
                 width = buttonWidth
             )
             Spacer(modifier = Modifier.width(horizontalPaddingBetweenButtons))
-            WhiteButton(
+            SecondaryButton(
                 text = "Sort A-Z",
                 onClick = { /*TODO*/ },
                 width = buttonWidth
@@ -91,13 +91,13 @@ fun ShoppingListScreen() {
             horizontalArrangement = Arrangement.SpaceBetween,
 
             ) {
-            BlackButton(
+            PrimaryButton(
                 text = "Clear List",
                 onClick = { /*TODO*/ },
                 width = buttonWidth
             )
             Spacer(modifier = Modifier.width(horizontalPaddingBetweenButtons))
-            BlackButton(
+            PrimaryButton(
                 text = "Add Item",
                 onClick = { /*TODO*/ },
                 width = buttonWidth
