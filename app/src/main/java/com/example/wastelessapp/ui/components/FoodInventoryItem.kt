@@ -1,4 +1,5 @@
 package com.example.wastelessapp.ui.components
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,14 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.wastelessapp.ui.components.BaseItem
-import com.example.wastelessapp.ui.components.FoodUnit
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -36,17 +35,20 @@ data class FoodItem(
     override val name: String,
     override val quantity: Int,
     override val unit: FoodUnit,
-    val price : Double,
-    val expiryDate : LocalDateTime,
-    val purchaseDate : LocalDateTime,
+    val price: Double,
+    val expiryDate: LocalDateTime,
+    val purchaseDate: LocalDateTime,
 
-): BaseItem(id, name, quantity, unit) {
+    ) : BaseItem(id, name, quantity, unit) {
     fun getDaysLeft(): Int {
-        return ChronoUnit.DAYS.between(LocalDateTime.now().toLocalDate(), expiryDate.toLocalDate()).toInt()
+        return ChronoUnit.DAYS.between(LocalDateTime.now().toLocalDate(), expiryDate.toLocalDate())
+            .toInt()
     }
+
     fun isExpired(): Boolean {
         return getDaysLeft() > 0
     }
+
     fun expireMessage(): String {
         val daysLeft: Int = getDaysLeft()
 
@@ -58,16 +60,33 @@ data class FoodItem(
             else -> "Expired ${-daysLeft} days ago"
         }
     }
+
+    fun getBackgroundBasedOnExpiry(): Brush {
+        val daysLeft: Int = getDaysLeft()
+        return Brush.horizontalGradient(
+            colors = when {
+                daysLeft < 0 -> listOf(Color.Red.copy(alpha = 0.08f), Color.Transparent)
+                daysLeft in 0..1 -> listOf(Color.Yellow.copy(alpha = 0.08f), Color.Transparent)
+                else -> listOf(Color.Transparent, Color.Transparent)
+            }
+        )
+
+    }
 }
+
 @Composable
 fun FoodInventoryItem(item: FoodItem) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .bottomBorder(),
+            .bottomBorder()
+            .background(item.getBackgroundBasedOnExpiry()),
+        //,
+
 
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
+
     ) {
         Icon(
             imageVector = item.icon,
@@ -103,7 +122,7 @@ fun FoodInventoryItem(item: FoodItem) {
             text = item.expireMessage(),
             fontSize = 18.sp,
             textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold, // slight boldness
+            fontWeight = FontWeight.Medium, // slight boldness
             softWrap = true,
             modifier = Modifier.width(80.dp)
         )

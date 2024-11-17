@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class FoodUnit {
     PCS,
-    G,
+    GRAM,
     MILLILITER
 }
 
@@ -20,11 +20,11 @@ open class BaseItem(
     open val category: String = determineCategory(name),
     open val icon: ImageVector = determineIcon(category)
 
-){
+) {
     fun getQtyString(): String {
         return when (unit) {
             FoodUnit.PCS -> "$quantity pcs"
-            FoodUnit.G -> "${quantity}g"
+            FoodUnit.GRAM -> "${quantity}g"
             FoodUnit.MILLILITER -> "${quantity}ml"
         }
     }
