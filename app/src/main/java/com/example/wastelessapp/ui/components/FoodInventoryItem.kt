@@ -63,10 +63,11 @@ data class FoodItem(
 
     fun getBackgroundBasedOnExpiry(): Brush {
         val daysLeft: Int = getDaysLeft()
+        val gradientIntensity: Float = 0.14f
         return Brush.horizontalGradient(
             colors = when {
-                daysLeft < 0 -> listOf(Color.Red.copy(alpha = 0.08f), Color.Transparent)
-                daysLeft in 0..1 -> listOf(Color.Yellow.copy(alpha = 0.08f), Color.Transparent)
+                daysLeft < 0 -> listOf(Color.Red.copy(alpha = gradientIntensity), Color.Transparent)
+                daysLeft in 0..1 -> listOf(Color.Yellow.copy(alpha = gradientIntensity), Color.Transparent)
                 else -> listOf(Color.Transparent, Color.Transparent)
             }
         )
