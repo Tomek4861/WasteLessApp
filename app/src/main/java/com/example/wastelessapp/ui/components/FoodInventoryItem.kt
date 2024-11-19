@@ -81,7 +81,8 @@ fun FoodInventoryItem(item: FoodItem) {
         modifier = Modifier
             .fillMaxWidth()
             .bottomBorder()
-            .background(item.getBackgroundBasedOnExpiry()),
+            .background(item.getBackgroundBasedOnExpiry())
+            .padding(4.dp),
         //,
 
 
