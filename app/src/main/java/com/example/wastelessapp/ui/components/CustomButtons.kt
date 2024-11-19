@@ -63,6 +63,7 @@ fun PrimaryButton(
     CustomButton(
         text = text,
         onClick = onClick,
+        fontSize = fontSize,
         backgroundColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
         width = width
@@ -79,6 +80,7 @@ fun SecondaryButton(
     CustomButton(
         text = text,
         onClick = onClick,
+        fontSize = fontSize,
         backgroundColor = MaterialTheme.colorScheme.secondary,
         contentColor = MaterialTheme.colorScheme.onSecondary,
         width = width

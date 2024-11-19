@@ -8,12 +8,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -21,36 +20,74 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.wastelessapp.ui.components.BaseItem
-import com.example.wastelessapp.ui.components.FoodUnit
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 
-
-
-data class ShoppingItem(
+data class FoodItem(
     override val id: Int,
     override val name: String,
     override val quantity: Int,
     override val unit: FoodUnit,
-    val isChecked: Boolean = false,
-): BaseItem(id, name, quantity, unit)
+    val price: Double,
+    val expiryDate: LocalDateTime,
+    val purchaseDate: LocalDateTime,
 
+    ) : BaseItem(id, name, quantity, unit) {
+    fun getDaysLeft(): Int {
+        return ChronoUnit.DAYS.between(LocalDateTime.now().toLocalDate(), expiryDate.toLocalDate())
+            .toInt()
+    }
+
+    fun isExpired(): Boolean {
+        return getDaysLeft() > 0
+    }
+
+    fun expireMessage(): String {
+        val daysLeft: Int = getDaysLeft()
+
+        return when {
+            daysLeft > 1 -> "Expires in $daysLeft days"
+            daysLeft == 1 -> "Expires in 1 day"
+            daysLeft == 0 -> "Expires Today!"
+            daysLeft == -1 -> "Expired 1 day ago"
+            else -> "Expired ${-daysLeft} days ago"
+        }
+    }
+
+    fun getBackgroundBasedOnExpiry(): Brush {
+        val daysLeft: Int = getDaysLeft()
+        val gradientIntensity: Float = 0.14f
+        return Brush.horizontalGradient(
+            colors = when {
+                daysLeft < 0 -> listOf(Color.Red.copy(alpha = gradientIntensity), Color.Transparent)
+                daysLeft in 0..1 -> listOf(Color.Yellow.copy(alpha = gradientIntensity), Color.Transparent)
+                else -> listOf(Color.Transparent, Color.Transparent)
+            }
+        )
+
+    }
+}
 
 @Composable
-fun ShoppingListItem(item: ShoppingItem) {
+fun FoodInventoryItem(item: FoodItem) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .bottomBorder(),
+            .bottomBorder()
+            .background(item.getBackgroundBasedOnExpiry()),
+        //,
+
 
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
+
     ) {
         Icon(
             imageVector = item.icon,
@@ -67,7 +104,7 @@ fun ShoppingListItem(item: ShoppingItem) {
             Text(
                 text = item.name,
                 fontSize = 20.sp,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Left,
                 fontWeight = FontWeight.Medium, // slight boldness
                 modifier = Modifier
             )
@@ -82,6 +119,14 @@ fun ShoppingListItem(item: ShoppingItem) {
             )
         }
         Spacer(Modifier.weight(1f))
+        Text(
+            text = item.expireMessage(),
+            fontSize = 18.sp,
+            textAlign = TextAlign.Left,
+            fontWeight = FontWeight.Medium, // slight boldness
+            softWrap = true,
+            modifier = Modifier.width(80.dp)
+        )
 
         IconButton(
             onClick = { /* TODO*/ },
