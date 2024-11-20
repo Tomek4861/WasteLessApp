@@ -87,3 +87,22 @@ fun SecondaryButton(
 
     )
 }
+
+
+@Composable
+fun UncheckedButton(
+    text: String,
+    onClick: () -> Unit,
+    width: Dp = 200.dp,
+    fontSize: TextUnit = 18.sp
+) {
+    CustomButton(
+        text = text,
+        onClick = onClick,
+        fontSize = fontSize,
+        backgroundColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+        borderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+        width = width
+    )
+}

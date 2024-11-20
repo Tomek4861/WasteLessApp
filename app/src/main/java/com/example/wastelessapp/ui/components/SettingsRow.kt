@@ -75,7 +75,7 @@ fun NotificationSettingsRow(notificationSettingItem: NotificationSettingsItem) {
         ) {
             Text(
                 text = notificationSettingItem.rowMessage(),
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Normal, // slight boldness
                 modifier = Modifier

@@ -27,6 +27,8 @@ import com.example.wastelessapp.ui.components.CustomTopAppBar
 import com.example.wastelessapp.ui.components.NotificationSettingsItem
 import com.example.wastelessapp.ui.components.NotificationSettingsRow
 import com.example.wastelessapp.ui.components.PrimaryButton
+import com.example.wastelessapp.ui.components.SecondaryButton
+import com.example.wastelessapp.ui.components.UncheckedButton
 import com.example.wastelessapp.ui.components.bottomBorder
 import kotlinx.serialization.Serializable
 
@@ -73,14 +75,15 @@ fun SettingsScreen() {
                 textAlign = TextAlign.Start,
 
                 )
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()) {
-            PrimaryButton(
-                text = "Reset App",
-                onClick = { /*TODO*/ },
-                width = 220.dp
-            )}
+            SelectSoundRow()
+            Text(
+                text="Choose a sound",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Start,
+                modifier = Modifier.alpha(0.5f)
+
+                )
             Spacer(modifier = Modifier.height(16.dp))
             Text(text="App Info",
                 fontSize = 18.sp,
@@ -118,12 +121,23 @@ fun SettingsScreen() {
 
                     )
                 }
+                Spacer(modifier = Modifier.height(12.dp))
+
 
             }
 
 
 
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()) {
+            PrimaryButton(
+                text = "Reset App",
+                onClick = { /*TODO*/ },
+                width = 220.dp
+            )}
+
 
 
     }
@@ -137,4 +151,18 @@ fun AppLogo(){
         modifier = Modifier.size(100.dp)
     )
 
+}
+
+
+@Composable
+fun SelectSoundRow(){
+    Row(horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()){
+        UncheckedButton(text = "Meow", onClick = { /*TODO*/ }, width = 90.dp, fontSize=12.sp)
+        UncheckedButton(text = "Bell", onClick = { /*TODO*/ }, width = 90.dp, fontSize=12.sp)
+        UncheckedButton(text = "Clap", onClick = { /*TODO*/ }, width = 90.dp, fontSize=12.sp)
+        SecondaryButton(text = "Tick", onClick = { /*TODO*/ }, width = 90.dp, fontSize=12.sp)
+
+    }
 }
