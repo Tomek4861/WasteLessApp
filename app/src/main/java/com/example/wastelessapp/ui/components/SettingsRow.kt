@@ -97,7 +97,7 @@ fun NotificationSettingsRow(notificationSettingItem: NotificationSettingsItem) {
 @Composable
 fun ToggleIconButton(isChecked: Boolean, onCheckedChange: () -> Unit) {
     val icon = if (isChecked) Icons.Default.Check else Icons.Default.Close
-    val backgroundColor = if (isChecked) Color.Green.copy(alpha = 0.5f) else Color.Red.copy(alpha = 0.5f)
+    val backgroundColor = if (isChecked) Color.Green.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.4f)
 
     IconButton(
         onClick = onCheckedChange,

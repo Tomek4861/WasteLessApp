@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -20,9 +24,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wastelessapp.R
+import com.example.wastelessapp.ui.components.ButtonRow
 import com.example.wastelessapp.ui.components.CustomTopAppBar
 import com.example.wastelessapp.ui.components.NotificationSettingsItem
 import com.example.wastelessapp.ui.components.NotificationSettingsRow
@@ -75,7 +82,8 @@ fun SettingsScreen() {
                 textAlign = TextAlign.Start,
 
                 )
-            SelectSoundRow()
+            ButtonRow(listOf("Meow", "Bell", "Clap", "Tick"), "Meow")
+
             Text(
                 text="Choose a sound",
                 fontSize = 14.sp,
@@ -154,15 +162,3 @@ fun AppLogo(){
 }
 
 
-@Composable
-fun SelectSoundRow(){
-    Row(horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()){
-        UncheckedButton(text = "Meow", onClick = { /*TODO*/ }, width = 90.dp, fontSize=14.sp)
-        UncheckedButton(text = "Bell", onClick = { /*TODO*/ }, width = 90.dp, fontSize=14.sp)
-        UncheckedButton(text = "Clap", onClick = { /*TODO*/ }, width = 90.dp, fontSize=14.sp)
-        SecondaryButton(text = "Tick", onClick = { /*TODO*/ }, width = 90.dp, fontSize=14.sp)
-
-    }
-}
