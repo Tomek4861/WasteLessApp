@@ -159,10 +159,10 @@ fun SelectSoundRow(){
     Row(horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()){
-        UncheckedButton(text = "Meow", onClick = { /*TODO*/ }, width = 90.dp, fontSize=12.sp)
-        UncheckedButton(text = "Bell", onClick = { /*TODO*/ }, width = 90.dp, fontSize=12.sp)
-        UncheckedButton(text = "Clap", onClick = { /*TODO*/ }, width = 90.dp, fontSize=12.sp)
-        SecondaryButton(text = "Tick", onClick = { /*TODO*/ }, width = 90.dp, fontSize=12.sp)
+        UncheckedButton(text = "Meow", onClick = { /*TODO*/ }, width = 90.dp, fontSize=14.sp)
+        UncheckedButton(text = "Bell", onClick = { /*TODO*/ }, width = 90.dp, fontSize=14.sp)
+        UncheckedButton(text = "Clap", onClick = { /*TODO*/ }, width = 90.dp, fontSize=14.sp)
+        SecondaryButton(text = "Tick", onClick = { /*TODO*/ }, width = 90.dp, fontSize=14.sp)
 
     }
 }
