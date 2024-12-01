@@ -1,6 +1,9 @@
 package com.example.wastelessapp.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -8,6 +11,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -86,4 +94,55 @@ fun SecondaryButton(
         width = width
 
     )
+}
+
+
+@Composable
+fun UncheckedButton(
+    text: String,
+    onClick: () -> Unit,
+    width: Dp = 200.dp,
+    fontSize: TextUnit = 18.sp
+) {
+    CustomButton(
+        text = text,
+        onClick = onClick,
+        fontSize = fontSize,
+        backgroundColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.65f),
+        borderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+        width = width
+    )
+}
+
+@Composable
+fun ButtonRow(buttons: List<String>, currentlySelected: String, buttonWidth: Dp = 90.dp, fontSize: TextUnit = 14.sp) {
+
+    var selectedButton by remember { mutableStateOf(currentlySelected) }
+
+
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+
+        buttons.forEach { buttonText ->
+            if (buttonText == selectedButton) {
+                SecondaryButton(
+                    text = buttonText,
+                    onClick = { /* Not needed here I guess */ },
+                    width = buttonWidth,
+                    fontSize = fontSize
+                )
+            } else {
+                UncheckedButton(
+                    text = buttonText,
+                    onClick = { selectedButton = buttonText },
+                    width = buttonWidth,
+                    fontSize = fontSize
+                )
+            }
+        }
+    }
 }

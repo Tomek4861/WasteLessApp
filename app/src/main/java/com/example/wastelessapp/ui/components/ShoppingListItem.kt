@@ -38,7 +38,7 @@ data class ShoppingItem(
     override val name: String,
     override val quantity: Int,
     override val unit: FoodUnit,
-    val isChecked: Boolean = false,
+    var isChecked: Boolean = false,
 ): BaseItem(id, name, quantity, unit)
 
 
@@ -47,7 +47,8 @@ fun ShoppingListItem(item: ShoppingItem) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .bottomBorder(),
+            .bottomBorder()
+            .padding(4.dp),
 
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
