@@ -1,4 +1,4 @@
-package com.example.wastelessapp.database.rooms.product
+package com.example.wastelessapp.database.entities.inventory_item
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,8 +14,8 @@ import java.sql.Date
 import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ProductViewModel(
-    private val dao: ProductDao
+class InventoryItemViewModel(
+    private val dao: InventoryItemDao
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.EXPIRATION_DATE)
     private val _products = _sortType
@@ -27,23 +27,23 @@ class ProductViewModel(
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    private val _state = MutableStateFlow(ProductState())
+    private val _state = MutableStateFlow(InventoryItemState())
     val state = combine(_state, _sortType, _products) { state, sortType, products ->
         state.copy(
-            products = products,
+            inventoryItems = products,
             sortType = sortType
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProductState())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InventoryItemState())
 
-    fun onEvent(event: ProductEvent) {
+    fun onEvent(event: InventoryItemEvent) {
         when (event) {
-            is ProductEvent.DeleteProduct -> {
+            is InventoryItemEvent.DeleteInventoryItem -> {
                 viewModelScope.launch {
-                    dao.deleteProduct(event.product)
+                    dao.deleteProduct(event.inventoryItem)
                 }
             }
 
-            ProductEvent.HideDialog -> {
+            InventoryItemEvent.HideDialog -> {
                 _state.update {
                     it.copy(
                         isAddingProduct = false
@@ -51,38 +51,38 @@ class ProductViewModel(
                 }
             }
 
-            ProductEvent.SaveProduct -> {
-                val name = state.value.name
-                val unit = state.value.unit
+            InventoryItemEvent.SaveInventoryItem -> {
+                val product = state.value.product
+                val unit = state.value.itemUnit
                 val amount = state.value.amount
                 val expirationDate = state.value.expirationDate
                 val price = state.value.price
 
-                //TODO checks for unit, date, amount
-                if (name.isBlank() || amount.isNaN() )
-                    return
+                //TODO checks for unit, date, amount on frontend side
+//                if (name.isBlank() || amount.isNaN() )
+//                    return
 
-                val product = Product(
-                    name = name,
-                    unit = unit,
+                val inventoryItem = InventoryItem(
+                    product = product,
+                    itemUnit = unit,
                     amount = amount,
                     expirationDate = expirationDate,
                     price = price
                 )
                 viewModelScope.launch {
-                    dao.upsertProduct(product)
+                    dao.upsertProduct(inventoryItem)
                 }
                 _state.update { it.copy(
                     isAddingProduct = false,
-                    name = "",
-                    unit = Unit.PIECES,
+                    product = 0,
+                    itemUnit = ItemUnit.PIECES,
                     amount = 0f,
                     expirationDate = Date.valueOf(LocalDate.now().toString()),
                     price = 0f
                 ) }
             }
 
-            is ProductEvent.SetAmount -> {
+            is InventoryItemEvent.SetAmount -> {
                 _state.update {
                     it.copy(
                         amount = event.amount
@@ -90,7 +90,7 @@ class ProductViewModel(
                 }
             }
 
-            is ProductEvent.SetExpirationDate -> {
+            is InventoryItemEvent.SetExpirationDate -> {
                 _state.update {
                     it.copy(
                         expirationDate = event.expirationDate
@@ -98,15 +98,15 @@ class ProductViewModel(
                 }
             }
 
-            is ProductEvent.SetName -> {
+            is InventoryItemEvent.SetProduct -> {
                 _state.update {
                     it.copy(
-                        name = event.name
+                        product = event.product
                     )
                 }
             }
 
-            is ProductEvent.SetPrice -> {
+            is InventoryItemEvent.SetPrice -> {
                 _state.update {
                     it.copy(
                         price = event.price
@@ -114,15 +114,15 @@ class ProductViewModel(
                 }
             }
 
-            is ProductEvent.SetUnit -> {
+            is InventoryItemEvent.SetUnit -> {
                 _state.update {
                     it.copy(
-                        unit = event.unit
+                        itemUnit = event.itemUnit
                     )
                 }
             }
 
-            ProductEvent.ShowDialog -> {
+            InventoryItemEvent.ShowDialog -> {
                 _state.update {
                     it.copy(
                         isAddingProduct = true
@@ -130,7 +130,7 @@ class ProductViewModel(
                 }
             }
 
-            is ProductEvent.SortProducts -> {
+            is InventoryItemEvent.SortProducts -> {
                 _sortType.value = event.sortType
             }
         }
