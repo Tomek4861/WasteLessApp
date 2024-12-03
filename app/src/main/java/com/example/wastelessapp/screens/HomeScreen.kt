@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Face
@@ -41,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wastelessapp.ui.components.CustomButton
 import com.example.wastelessapp.ui.components.CustomTopAppBar
+import com.example.wastelessapp.ui.components.PrimaryButton
+import com.example.wastelessapp.ui.components.SecondaryButton
 import com.example.wastelessapp.ui.components.ShoppingListItem
 import kotlinx.serialization.Serializable
 
@@ -51,8 +55,7 @@ object HomeScreen
 @Composable
 fun HomeScreen() {
     Column (
-        modifier = Modifier
-            .background(color = Color.White)
+
     )
     {
         CustomTopAppBar("Home Screen")
@@ -63,9 +66,9 @@ fun HomeScreen() {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top,
             modifier = Modifier
-                .background(color = Color.White)
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState())
             )
         {
 
@@ -78,13 +81,10 @@ fun HomeScreen() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            CustomButton(
+            PrimaryButton(
                 text = "Add New Product",
                 onClick = { /*TODO*/ },
-                backgroundColor = Color.Black,
-                contentColor = Color.White,
                 width = 400.dp,
-                fontSize = 14.sp
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -94,20 +94,17 @@ fun HomeScreen() {
               )
             {
                 Text (
-                    "Your Progress in Last Month",
+                    "Progress in Last Month",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(40.dp))
 
-                CustomButton(
+                SecondaryButton(
                     text = "View Details...",
                     onClick = { /*TODO*/ },
-                    backgroundColor = Color.White,
-                    contentColor = Color.Black,
                     width = 120.dp,
-                    fontSize = 10.sp
                 )
 
             }
@@ -127,18 +124,15 @@ fun HomeScreen() {
                 ) {
                     Text(
                         "Products saved",
-                        color = Color.Gray,
                         fontSize = 12.sp
                     )
                     Text(
                         "87%",
-                        color = Color.Black,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         "↗10%",
-                        color = Color.Black,
                         fontSize = 15.sp
                     )
                 }
@@ -157,18 +151,15 @@ fun HomeScreen() {
                 ) {
                     Text(
                         "Losses",
-                        color = Color.Gray,
                         fontSize = 12.sp
                     )
                     Text(
                         "1",
-                        color = Color.Black,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         "↙50%",
-                        color = Color.Black,
                         fontSize = 15.sp
                     )
                 }
@@ -186,18 +177,14 @@ fun HomeScreen() {
              {
                 Text(
                     "Your Products",
-                    color = Color.Black,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
 
-                 CustomButton(
+                 SecondaryButton(
                      text = "View Details...",
                      onClick = { /*TODO*/ },
-                     backgroundColor = Color.White,
-                     contentColor = Color.Black,
                      width = 120.dp,
-                     fontSize = 10.sp
                  )
             }
 
@@ -217,13 +204,11 @@ fun HomeScreen() {
                 {
                     Text (
                         "Not saved",
-                        color = Color.Gray,
                         fontSize = 12.sp,
                     )
 
                     Text (
                         "6",
-                        color = Color.Black,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -246,13 +231,11 @@ fun HomeScreen() {
                 {
                     Text (
                         "Expire soon",
-                        color = Color.Gray,
                         fontSize = 12.sp,
                     )
 
                     Text (
                         "4",
-                        color = Color.Black,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -275,13 +258,11 @@ fun HomeScreen() {
                 {
                     Text (
                         "Expired",
-                        color = Color.Gray,
                         fontSize = 12.sp,
                     )
 
                     Text (
                         "1",
-                        color = Color.Black,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -294,21 +275,19 @@ fun HomeScreen() {
 
             ExpirationListItem(name = "Apple", expired = true, days = 2)
 
-            LazyColumn (
+            Column (
                 modifier = Modifier
                     .fillMaxWidth(1f)
             )
             {
-                items(2) { item ->
-                    ExpirationListItem(name = "Steak", expired = false, days = 1)
-                }
+                ExpirationListItem(name = "Steak", expired = false, days = 1)
+                ExpirationListItem(name = "Steak", expired = false, days = 1)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
                 text = "Tips How to Save Food",
-                color = Color.Black,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -321,13 +300,13 @@ fun HomeScreen() {
                     .height(100.dp)
                     .border(BorderStroke(1.dp, color = Color.Gray), shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 8.dp, vertical = 10.dp)
+                    .verticalScroll(rememberScrollState())
             )
             {
                 Text(
                     text = "To avoid food waste, plan meals for the week using ingredients " +
                             "you already have before shopping. This helps ensure nothing is wasted, " +
                             "and you only buy what you need!",
-                    color = Color.Black,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
