@@ -43,10 +43,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wastelessapp.ui.components.CustomButton
 import com.example.wastelessapp.ui.components.CustomTopAppBar
+import com.example.wastelessapp.ui.components.FoodInventoryItem
+import com.example.wastelessapp.ui.components.FoodItem
+import com.example.wastelessapp.ui.components.FoodUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.SecondaryButton
 import com.example.wastelessapp.ui.components.ShoppingListItem
 import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 
 @Serializable
 object HomeScreen
@@ -273,15 +277,18 @@ fun HomeScreen() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            ExpirationListItem(name = "Apple", expired = true, days = 2)
+            FoodInventoryItem(FoodItem(id = 1, name = "Apple", quantity = 2, unit = FoodUnit.PCS,
+                price = 5.50, expiryDate = LocalDateTime.now(), purchaseDate = LocalDateTime.now()))
 
             Column (
                 modifier = Modifier
                     .fillMaxWidth(1f)
             )
             {
-                ExpirationListItem(name = "Steak", expired = false, days = 1)
-                ExpirationListItem(name = "Steak", expired = false, days = 1)
+                FoodInventoryItem(FoodItem(id = 2, name = "Steak", quantity = 1, unit = FoodUnit.PCS,
+                    price = 27.30, expiryDate = LocalDateTime.now(), purchaseDate = LocalDateTime.now()))
+                FoodInventoryItem(FoodItem(id = 2, name = "Steak", quantity = 1, unit = FoodUnit.PCS,
+                    price = 27.30, expiryDate = LocalDateTime.now(), purchaseDate = LocalDateTime.now()))
             }
 
             Spacer(modifier = Modifier.height(24.dp))
