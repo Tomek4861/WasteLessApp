@@ -10,6 +10,6 @@ data class InventoryItemState(
     val amount: Float = 0f,
     val expirationDate: Date = Date.valueOf(LocalDate.now().toString()),
     val price: Float = 0f,
-    val isAddingProduct: Boolean = false,
+    val isAddingItem: Boolean = false,
     val sortType: SortType = SortType.EXPIRATION_DATE
 )

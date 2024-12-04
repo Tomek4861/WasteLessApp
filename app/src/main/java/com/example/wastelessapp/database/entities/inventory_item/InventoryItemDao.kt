@@ -8,17 +8,17 @@ import kotlinx.coroutines.flow.Flow
 interface InventoryItemDao {
 
     @Upsert
-    suspend fun upsertProduct(inventoryItem: InventoryItem)
+    suspend fun upsertInventoryItem(inventoryItem: InventoryItem)
 
     @Delete
-    suspend fun deleteProduct(inventoryItem: InventoryItem)
+    suspend fun deleteInventoryItem(inventoryItem: InventoryItem)
 
     @Query("SELECT * FROM InventoryItem WHERE state = :state ORDER BY product ASC") //TODO add active items filter
-    fun getProductsByName(state: String = "ACTIVE"): Flow<List<InventoryItem>>
+    fun getInventoryItemsByName(state: String = "ACTIVE"): Flow<List<InventoryItem>>
 
     @Query("SELECT * FROM inventoryitem ORDER BY expirationDate ASC")
-    fun getProductsByExpirationDate(): Flow<List<InventoryItem>>
+    fun getInventoryItemsByExpirationDate(): Flow<List<InventoryItem>>
 
     @Query("SELECT * FROM inventoryitem ORDER BY itemUnit, amount ASC")
-    fun getProductsByAmount(): Flow<List<InventoryItem>>
+    fun getInventoryItemsByAmount(): Flow<List<InventoryItem>>
 }

@@ -18,19 +18,19 @@ class InventoryItemViewModel(
     private val dao: InventoryItemDao
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.EXPIRATION_DATE)
-    private val _products = _sortType
+    private val _inventoryItems = _sortType
         .flatMapLatest { sortType ->
             when (sortType) {
-                SortType.EXPIRATION_DATE -> dao.getProductsByExpirationDate()
-                SortType.NAME -> dao.getProductsByName()
-                SortType.AMOUNT -> dao.getProductsByAmount()
+                SortType.EXPIRATION_DATE -> dao.getInventoryItemsByExpirationDate()
+                SortType.NAME -> dao.getInventoryItemsByName()
+                SortType.AMOUNT -> dao.getInventoryItemsByAmount()
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _state = MutableStateFlow(InventoryItemState())
-    val state = combine(_state, _sortType, _products) { state, sortType, products ->
+    val state = combine(_state, _sortType, _inventoryItems) { state, sortType, inventoryItems ->
         state.copy(
-            inventoryItems = products,
+            inventoryItems = inventoryItems,
             sortType = sortType
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), InventoryItemState())
@@ -39,14 +39,14 @@ class InventoryItemViewModel(
         when (event) {
             is InventoryItemEvent.DeleteInventoryItem -> {
                 viewModelScope.launch {
-                    dao.deleteProduct(event.inventoryItem)
+                    dao.deleteInventoryItem(event.inventoryItem)
                 }
             }
 
             InventoryItemEvent.HideDialog -> {
                 _state.update {
                     it.copy(
-                        isAddingProduct = false
+                        isAddingItem = false
                     )
                 }
             }
@@ -70,10 +70,10 @@ class InventoryItemViewModel(
                     price = price
                 )
                 viewModelScope.launch {
-                    dao.upsertProduct(inventoryItem)
+                    dao.upsertInventoryItem(inventoryItem)
                 }
                 _state.update { it.copy(
-                    isAddingProduct = false,
+                    isAddingItem = false,
                     product = 0,
                     itemUnit = ItemUnit.PIECES,
                     amount = 0f,
@@ -125,7 +125,7 @@ class InventoryItemViewModel(
             InventoryItemEvent.ShowDialog -> {
                 _state.update {
                     it.copy(
-                        isAddingProduct = true
+                        isAddingItem = true
                     )
                 }
             }
