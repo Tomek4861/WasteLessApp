@@ -2,6 +2,7 @@ package com.example.wastelessapp.ui.components
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -22,14 +23,14 @@ import androidx.compose.ui.unit.dp
 fun CustomTopAppBar(pageName: String) {
 
     TopAppBar(
-        navigationIcon = {
-            IconButton(onClick = { /*TODO*/ }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                )
-            }
-        },
+//        navigationIcon = {
+//            IconButton(onClick = { /*TODO*/ }) {
+//                Icon(
+//                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+//                    contentDescription = "Back",
+//                )
+//            }
+//        },
         title = {
             Text(
                 text = pageName,
@@ -37,10 +38,10 @@ fun CustomTopAppBar(pageName: String) {
                 modifier = Modifier.fillMaxWidth()
             )
         },
-        actions = { Spacer(modifier = Modifier.width(48.dp)) }, // empty space for symmetry
         colors = TopAppBarDefaults.topAppBarColors(),
         modifier = Modifier
             .bottomBorder()
+            .height(56.dp)
 
     )
 
