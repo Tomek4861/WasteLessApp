@@ -49,7 +49,7 @@ fun HomeScreen() {
 
     )
     {
-        CustomTopAppBar("Home")
+
 
         Spacer(modifier = Modifier.height(16.dp))
 

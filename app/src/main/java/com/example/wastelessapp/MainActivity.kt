@@ -32,6 +32,7 @@ import com.example.wastelessapp.screens.HomeScreen
 import com.example.wastelessapp.screens.SettingsScreen
 import com.example.wastelessapp.screens.ShoppingListScreen
 import com.example.wastelessapp.screens.StatisticsScreen
+import com.example.wastelessapp.ui.components.CustomTopAppBar
 import com.example.wastelessapp.ui.theme.WasteLessAppTheme
 
 
@@ -42,6 +43,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             WasteLessAppTheme {
                 val navController = rememberNavController()
+
+                val screensNameList = listOf(
+                    "Home",
+                    "Food",
+                    "Statistics",
+                    "Shopping List",
+                    "Settings"
+                )
                 val navItems = listOf(
                     BottomNavigationItem(
                         title = "Home",
@@ -93,12 +102,16 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    topBar = {
+                        CustomTopAppBar(pageName = screensNameList[selectedItemIndex])
+                    },
                     bottomBar = {
                         BottomNavigationBar(
                             navItems = navItems,
                             navController = navController,
                             selectedItemIndex = selectedItemIndex,
                             onItemSelected = {index, route ->
+                                println("Index: $index, Route: $route")
                                 selectedItemIndex = index
                                 navController.navigate(route)
                             }
