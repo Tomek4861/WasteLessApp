@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -34,7 +36,8 @@ fun CustomButton(
     contentColor: Color,
     borderColor: Color? = Color.Black,
     width: Dp = 200.dp,
-    fontSize: TextUnit = 18.sp
+    fontSize: TextUnit = 18.sp,
+    icon: ImageVector? = null
 
 ) {
     Button(
@@ -57,6 +60,13 @@ fun CustomButton(
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center,
         )
+        if (icon != null) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = contentColor
+            )
+        }
     }
 }
 
@@ -66,7 +76,8 @@ fun PrimaryButton(
     text: String,
     onClick: () -> Unit,
     width: Dp = 200.dp,
-    fontSize: TextUnit = 18.sp
+    fontSize: TextUnit = 18.sp,
+    icon: ImageVector? = null
 ) {
     CustomButton(
         text = text,
@@ -74,7 +85,8 @@ fun PrimaryButton(
         fontSize = fontSize,
         backgroundColor = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
-        width = width
+        width = width,
+        icon = icon
     )
 }
 
@@ -83,7 +95,8 @@ fun SecondaryButton(
     text: String,
     onClick: () -> Unit,
     width: Dp = 200.dp,
-    fontSize: TextUnit = 18.sp
+    fontSize: TextUnit = 18.sp,
+    icon: ImageVector? = null
 ) {
     CustomButton(
         text = text,
@@ -91,7 +104,8 @@ fun SecondaryButton(
         fontSize = fontSize,
         backgroundColor = MaterialTheme.colorScheme.secondary,
         contentColor = MaterialTheme.colorScheme.onSecondary,
-        width = width
+        width = width,
+        icon = icon
 
     )
 }
@@ -102,7 +116,8 @@ fun UncheckedButton(
     text: String,
     onClick: () -> Unit,
     width: Dp = 200.dp,
-    fontSize: TextUnit = 18.sp
+    fontSize: TextUnit = 18.sp,
+    icon: ImageVector? = null
 ) {
     CustomButton(
         text = text,
@@ -111,7 +126,8 @@ fun UncheckedButton(
         backgroundColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.65f),
         borderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-        width = width
+        width = width,
+        icon = icon
     )
 }
 

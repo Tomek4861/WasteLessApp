@@ -15,13 +15,13 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -82,7 +82,7 @@ fun NotificationSettingsRow(notificationSettingItem: NotificationSettingsItem) {
             )
         }
         Spacer(Modifier.weight(1f))
-        ToggleIconButton(isChecked = notificationSettingItem.isChecked.value, onCheckedChange = notificationSettingItem::checkOrUncheck)
+        SimpleSwitch( isChecked = notificationSettingItem.isChecked.value, onCheckedChange = notificationSettingItem::checkOrUncheck)
 
 
 
@@ -95,7 +95,21 @@ fun NotificationSettingsRow(notificationSettingItem: NotificationSettingsItem) {
 
 
 @Composable
+fun SimpleSwitch(isChecked: Boolean, onCheckedChange: () -> Unit) {
+
+    Switch(
+        checked = isChecked,
+        onCheckedChange = {
+            onCheckedChange()
+        }
+    )
+}
+
+
+
+@Composable
 fun ToggleIconButton(isChecked: Boolean, onCheckedChange: () -> Unit) {
+    // unused
     val icon = if (isChecked) Icons.Default.Check else Icons.Default.Close
     val backgroundColor = if (isChecked) Color.Green.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.4f)
 

@@ -53,7 +53,6 @@ fun SettingsScreen() {
 
     )
     {
-        CustomTopAppBar(pageName = "Settings")
         Column(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
