@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.sp
 import com.example.wastelessapp.ui.components.CustomDropdownMenu
 import com.example.wastelessapp.ui.components.FoodUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
-import com.example.wastelessapp.ui.components.SecondaryButton
 import com.example.wastelessapp.ui.components.ShoppingItem
 import com.example.wastelessapp.ui.components.ShoppingListItem
 import kotlinx.serialization.Serializable
@@ -49,9 +48,8 @@ fun ShoppingListScreen() {
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 4.dp)
-            ,
-        ){
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+        ) {
             Text(
                 "Sort By:",
                 fontSize = 18.sp,
@@ -60,7 +58,7 @@ fun ShoppingListScreen() {
                 modifier = Modifier.padding(start = 3.dp)
 
             )
-            CustomDropdownMenu(listOf("Expiration", "Alphabetical",), { /*TODO*/ })
+            CustomDropdownMenu(listOf("Expiration", "Alphabetical"), { /*TODO*/ })
 
         }
 
@@ -104,7 +102,7 @@ fun ShoppingListScreen() {
             PrimaryButton(
                 text = "Add Item",
                 onClick = { /*TODO*/ },
-                width = buttonWidth
+                width = buttonWidth,
             )
 
         }
