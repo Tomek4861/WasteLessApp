@@ -9,7 +9,7 @@ import java.time.LocalDate
 data class InventoryItem(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    var product: Int,
+    var product: String,
     var itemUnit: ItemUnit,
     var amount: Float,
     var dateAdded: Date = Date.valueOf(LocalDate.now().toString()),

@@ -22,7 +22,7 @@ class InventoryItemViewModel(
         .flatMapLatest { sortType ->
             when (sortType) {
                 SortType.EXPIRATION_DATE -> dao.getInventoryItemsByExpirationDate()
-                SortType.NAME -> dao.getInventoryItemsByName()
+                SortType.NAME -> dao.getActiveInventoryItemsByName()
                 SortType.AMOUNT -> dao.getInventoryItemsByAmount()
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -74,7 +74,7 @@ class InventoryItemViewModel(
                 }
                 _state.update { it.copy(
                     isAddingItem = false,
-                    product = 0,
+                    product = "",
                     itemUnit = ItemUnit.PIECES,
                     amount = 0f,
                     expirationDate = Date.valueOf(LocalDate.now().toString()),

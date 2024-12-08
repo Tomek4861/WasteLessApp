@@ -1,4 +1,4 @@
-package com.example.wastelessapp.database.relationships
+package com.example.wastelessapp.database.entities.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
@@ -9,8 +9,8 @@ data class ProductWithInventoryItems (
     @Embedded
     val product: Product,
     @Relation(
-        parentColumn = "id",
-        entityColumn = "id"
+        parentColumn = "name",
+        entityColumn = "product"
     )
     val inventoryItems: List<InventoryItem>
 )
