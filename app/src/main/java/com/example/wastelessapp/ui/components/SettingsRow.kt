@@ -18,8 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,13 +26,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.Preferences
+import com.example.wastelessapp.database.preferences.SettingsManager
+import kotlinx.coroutines.launch
 
 data class NotificationSettingsItem(
     val daysBeforeExpiration: Int,
-    var isChecked: MutableState<Boolean> = mutableStateOf(false)
+    var isChecked: Boolean
 
 
-    ) {
+) {
     fun rowMessage(): String {
 
         return when {
@@ -43,15 +45,22 @@ data class NotificationSettingsItem(
             else -> "Error "
         }
     }
+
     fun checkOrUncheck(): Unit {
-        isChecked.value = !isChecked.value
+        isChecked = !isChecked
         println("isChecked: $isChecked")
     }
 }
 
 
 @Composable
-fun NotificationSettingsRow(notificationSettingItem: NotificationSettingsItem) {
+fun NotificationSettingsRow(
+    notificationSettingItem: NotificationSettingsItem,
+    settingsManager: SettingsManager,
+    key: Preferences.Key<Boolean>
+    ) {
+    val scope = rememberCoroutineScope()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,7 +73,6 @@ fun NotificationSettingsRow(notificationSettingItem: NotificationSettingsItem) {
         Icon(
             imageVector = Icons.Outlined.Notifications,
             contentDescription = "Notification",
-
             modifier = Modifier.size(48.dp)
         )
         Column(
@@ -82,16 +90,21 @@ fun NotificationSettingsRow(notificationSettingItem: NotificationSettingsItem) {
             )
         }
         Spacer(Modifier.weight(1f))
-        SimpleSwitch( isChecked = notificationSettingItem.isChecked.value, onCheckedChange = notificationSettingItem::checkOrUncheck)
-
-
-
-
-        }
+        SimpleSwitch(
+            isChecked = notificationSettingItem.isChecked,
+            onCheckedChange = {
+                notificationSettingItem.checkOrUncheck()
+                scope.launch {
+                    settingsManager.setNotificationSetting(key, notificationSettingItem.isChecked)
+                }
+            }
+        )
 
 
     }
 
+
+}
 
 
 @Composable
@@ -106,12 +119,12 @@ fun SimpleSwitch(isChecked: Boolean, onCheckedChange: () -> Unit) {
 }
 
 
-
 @Composable
 fun ToggleIconButton(isChecked: Boolean, onCheckedChange: () -> Unit) {
     // unused
     val icon = if (isChecked) Icons.Default.Check else Icons.Default.Close
-    val backgroundColor = if (isChecked) Color.Green.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.4f)
+    val backgroundColor =
+        if (isChecked) Color.Green.copy(alpha = 0.5f) else Color.Black.copy(alpha = 0.4f)
 
     IconButton(
         onClick = onCheckedChange,
@@ -122,7 +135,7 @@ fun ToggleIconButton(isChecked: Boolean, onCheckedChange: () -> Unit) {
             tint = Color.White,
             modifier = Modifier
                 .background(backgroundColor, shape = RoundedCornerShape(8.dp)),
-                )
+        )
 
     }
 }
