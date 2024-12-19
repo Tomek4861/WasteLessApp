@@ -12,10 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -132,9 +128,13 @@ fun UncheckedButton(
 }
 
 @Composable
-fun ButtonRow(buttons: List<String>, currentlySelected: String, buttonWidth: Dp = 90.dp, fontSize: TextUnit = 14.sp) {
-
-    var selectedButton by remember { mutableStateOf(currentlySelected) }
+fun ButtonRow(
+    buttons: List<String>,
+    currentlySelected: String,
+    buttonWidth: Dp = 90.dp,
+    fontSize: TextUnit = 14.sp,
+    onSelected: (String) -> Unit
+) {
 
 
     Row(
@@ -144,7 +144,7 @@ fun ButtonRow(buttons: List<String>, currentlySelected: String, buttonWidth: Dp 
     ) {
 
         buttons.forEach { buttonText ->
-            if (buttonText == selectedButton) {
+            if (buttonText == currentlySelected) {
                 SecondaryButton(
                     text = buttonText,
                     onClick = { /* Not needed here I guess */ },
@@ -154,7 +154,9 @@ fun ButtonRow(buttons: List<String>, currentlySelected: String, buttonWidth: Dp 
             } else {
                 UncheckedButton(
                     text = buttonText,
-                    onClick = { selectedButton = buttonText },
+                    onClick = {
+                        onSelected(buttonText)
+                    },
                     width = buttonWidth,
                     fontSize = fontSize
                 )
