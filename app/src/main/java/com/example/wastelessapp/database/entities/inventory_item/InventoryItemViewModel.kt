@@ -21,9 +21,8 @@ class InventoryItemViewModel(
     private val _inventoryItems = _sortType
         .flatMapLatest { sortType ->
             when (sortType) {
-                SortType.EXPIRATION_DATE -> dao.getInventoryItemsByExpirationDate()
+                SortType.EXPIRATION_DATE -> dao.getActiveInventoryItemsByExpirationDate()
                 SortType.NAME -> dao.getActiveInventoryItemsByName()
-                SortType.AMOUNT -> dao.getInventoryItemsByAmount()
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
@@ -72,14 +71,16 @@ class InventoryItemViewModel(
                 viewModelScope.launch {
                     dao.upsertInventoryItem(inventoryItem)
                 }
-                _state.update { it.copy(
-                    isAddingItem = false,
-                    product = "",
-                    itemUnit = ItemUnit.PIECES,
-                    amount = 0f,
-                    expirationDate = Date.valueOf(LocalDate.now().toString()),
-                    price = 0f
-                ) }
+                _state.update {
+                    it.copy(
+                        isAddingItem = false,
+                        product = "",
+                        itemUnit = ItemUnit.PIECES,
+                        amount = 0f,
+                        expirationDate = Date.valueOf(LocalDate.now().toString()),
+                        price = 0f
+                    )
+                }
             }
 
             is InventoryItemEvent.SetAmount -> {
@@ -132,6 +133,20 @@ class InventoryItemViewModel(
 
             is InventoryItemEvent.SortProducts -> {
                 _sortType.value = event.sortType
+            }
+
+            is InventoryItemEvent.UpdateItemState -> {
+                val state: ItemState =
+                    if (Date.valueOf(LocalDate.now().toString()) <= event.inventoryItem.expirationDate) {
+                        ItemState.SAVED
+                    } else {
+                        ItemState.EXPIRED
+                    }
+                println("Updated product state: $state")
+
+                viewModelScope.launch {
+                    dao.updateItemState(event.inventoryItem.id, state)
+                }
             }
         }
     }

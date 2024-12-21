@@ -19,10 +19,19 @@ interface InventoryItemDao {
     fun getActiveInventoryItemsByName(state: String = "ACTIVE"): Flow<List<InventoryItem>>
 
     @Transaction
-    @Query("SELECT * FROM inventoryitem ORDER BY expirationDate ASC")
-    fun getInventoryItemsByExpirationDate(): Flow<List<InventoryItem>>
+    @Query("SELECT * FROM InventoryItem WHERE state = :state ORDER BY expirationDate ASC")
+    fun getActiveInventoryItemsByExpirationDate(state: String = "ACTIVE"): Flow<List<InventoryItem>>
+
+    @Transaction
+    @Query("SELECT * FROM inventoryitem")
+    fun getAllInventoryItems(): Flow<List<InventoryItem>>
 
     @Transaction
     @Query("SELECT * FROM inventoryitem ORDER BY itemUnit, amount ASC")
     fun getInventoryItemsByAmount(): Flow<List<InventoryItem>>
+
+    @Transaction
+    @Query("UPDATE InventoryItem SET state = :newState WHERE id = :id")
+    suspend fun updateItemState(id: Int, newState: ItemState)
+
 }
