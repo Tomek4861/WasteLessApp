@@ -2,7 +2,6 @@ package com.example.wastelessapp.database.entities.shopping_cart
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.wastelessapp.database.entities.inventory_item.InventoryItemDao
 import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +13,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ShoppingCartViewModel(
-    private val shoppingCartDao: ShoppingCartDao,
-    private val inventoryItemDao: InventoryItemDao
+    private val shoppingCartDao: ShoppingCartDao
 ) : ViewModel() {
     private val _shoppingCartItems = shoppingCartDao.getShoppingCartItems()
     private val _state = MutableStateFlow(ShoppingCartState())
