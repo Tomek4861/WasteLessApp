@@ -2,6 +2,7 @@ package com.example.wastelessapp.database.entities.inventory_item
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartDao
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,15 +16,15 @@ import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class InventoryItemViewModel(
-    private val dao: InventoryItemDao
+    private val dao: InventoryItemDao,
+    private val shoppingCartDao: ShoppingCartDao
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.EXPIRATION_DATE)
     private val _inventoryItems = _sortType
         .flatMapLatest { sortType ->
             when (sortType) {
-                SortType.EXPIRATION_DATE -> dao.getInventoryItemsByExpirationDate()
+                SortType.EXPIRATION_DATE -> dao.getActiveInventoryItemsByExpirationDate()
                 SortType.NAME -> dao.getActiveInventoryItemsByName()
-                SortType.AMOUNT -> dao.getInventoryItemsByAmount()
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
@@ -46,7 +47,8 @@ class InventoryItemViewModel(
             InventoryItemEvent.HideDialog -> {
                 _state.update {
                     it.copy(
-                        isAddingItem = false
+                        isAddingItem = false,
+                        shoppingCartItemToMove = null
                     )
                 }
             }
@@ -58,10 +60,6 @@ class InventoryItemViewModel(
                 val expirationDate = state.value.expirationDate
                 val price = state.value.price
 
-                //TODO checks for unit, date, amount on frontend side
-//                if (name.isBlank() || amount.isNaN() )
-//                    return
-
                 val inventoryItem = InventoryItem(
                     product = product,
                     itemUnit = unit,
@@ -71,15 +69,23 @@ class InventoryItemViewModel(
                 )
                 viewModelScope.launch {
                     dao.upsertInventoryItem(inventoryItem)
+
+                    if (state.value.shoppingCartItemToMove != null){
+                        shoppingCartDao.deleteShoppingCartItem(state.value.shoppingCartItemToMove!!)
+                    }
+
                 }
-                _state.update { it.copy(
-                    isAddingItem = false,
-                    product = "",
-                    itemUnit = ItemUnit.PIECES,
-                    amount = 0f,
-                    expirationDate = Date.valueOf(LocalDate.now().toString()),
-                    price = 0f
-                ) }
+                _state.update {
+                    it.copy(
+                        isAddingItem = false,
+                        product = "",
+                        itemUnit = ItemUnit.PIECES,
+                        amount = 0f,
+                        expirationDate = Date.valueOf(LocalDate.now().toString()),
+                        price = 0f,
+                        shoppingCartItemToMove = null
+                    )
+                }
             }
 
             is InventoryItemEvent.SetAmount -> {
@@ -132,6 +138,33 @@ class InventoryItemViewModel(
 
             is InventoryItemEvent.SortProducts -> {
                 _sortType.value = event.sortType
+            }
+
+            is InventoryItemEvent.UpdateItemState -> {
+                val state: ItemState =
+                    if (Date.valueOf(LocalDate.now().toString()) <= event.inventoryItem.expirationDate) {
+                        ItemState.SAVED
+                    } else {
+                        ItemState.EXPIRED
+                    }
+                println("Updated product state: $state")
+
+                viewModelScope.launch {
+                    dao.updateItemState(event.inventoryItem.id, state)
+                }
+            }
+
+            is InventoryItemEvent.MoveShoppingCartItem -> {
+                val shoppingCartItem = event.shoppingCartItem
+                _state.update {
+                    it.copy(
+                        isAddingItem = true,
+                        shoppingCartItemToMove = shoppingCartItem,
+                        product = shoppingCartItem.product,
+                        amount = shoppingCartItem.amount,
+                        itemUnit = shoppingCartItem.itemUnit
+                    )
+                }
             }
         }
     }
