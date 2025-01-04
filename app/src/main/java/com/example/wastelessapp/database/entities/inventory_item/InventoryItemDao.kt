@@ -34,4 +34,16 @@ interface InventoryItemDao {
     @Query("UPDATE InventoryItem SET state = :newState WHERE id = :id")
     suspend fun updateItemState(id: Int, newState: ItemState)
 
+    @Query("SELECT COUNT(*) FROM InventoryItem WHERE dateAdded >= DATE('now', '-30 days') AND state = :state")
+    suspend fun countItemsInLast30DaysByState(state: ItemState): Int
+
+    @Query("SELECT COUNT(*) FROM InventoryItem WHERE state = :state")
+    suspend fun countAllItemsByState(state: ItemState): Int
+
+    @Query("SELECT COUNT(*) FROM InventoryItem WHERE dateAdded >= DATE('now', '-30 days')")
+    suspend fun countTotalItemsInLast30Days(): Int
+
+    @Query("SELECT COUNT(*) FROM InventoryItem")
+    suspend fun countTotalItems(): Int
+
 }
