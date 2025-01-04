@@ -1,5 +1,8 @@
 package com.example.wastelessapp.screens
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,19 +25,24 @@ import kotlinx.serialization.Serializable
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupProperties
+import androidx.navigation.NavHostController
 import com.example.wastelessapp.ui.components.FoodUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.SecondaryButton
+import java.util.Calendar
 
 @Serializable
 object AddInventoryItemScreen
 
-@Preview
 @Composable
-fun AddInventoryItemScreen() {
+fun AddInventoryItemScreen(navController: NavHostController) {
+    var selectedDate by remember { mutableStateOf("") }
 
     Column (){
 
@@ -110,6 +119,19 @@ fun AddInventoryItemScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
+                text = "Expiration date",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
+
+            DatePickerField(
+                    selectedDate = selectedDate,
+                    onDateSelected = { date -> selectedDate = date }
+                )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
                 text = "Price",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
@@ -128,7 +150,11 @@ fun AddInventoryItemScreen() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            PrimaryButton("Add Item", onClick = {/* TODO: */}, width = 400.dp)
+            PrimaryButton("Add Item", onClick = {
+                // TODO add Item to database
+                navController.navigate(FoodScreen)
+            }
+                , width = 400.dp)
 
         }
     }
@@ -161,7 +187,8 @@ fun AutoCompleteTextField(
 
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
+            properties = PopupProperties(focusable = false) // Ensure dropdown does not steal focus
         ) {
             filteredItems.forEach { item ->
                 DropdownMenuItem(
@@ -176,6 +203,7 @@ fun AutoCompleteTextField(
         }
     }
 }
+
 
 @Composable
 fun AutoCompleteTextFieldProducts() {
@@ -197,6 +225,50 @@ fun UnitOption(
 ) {
     SecondaryButton(text = text, onClick = { /* TODO: */ }, width = 100.dp, fontSize = 12.sp)
 }
+
+@Composable
+fun DatePickerField(selectedDate: String, onDateSelected: (String) -> Unit) {
+    val context = LocalContext.current
+    val datePickerState = remember { mutableStateOf(false) }
+
+    if (datePickerState.value) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        android.app.DatePickerDialog(
+            context,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val date = "$selectedYear-${selectedMonth + 1}-$selectedDay"
+                onDateSelected(date)
+                datePickerState.value = false
+            },
+            year,
+            month,
+            day
+        ).show()
+    }
+
+    Row(
+        modifier = Modifier
+            .clickable { datePickerState.value = true },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = selectedDate.ifEmpty { "Click here to select an expiration date" },
+            fontSize = 12.sp,
+            modifier = Modifier
+                .border(
+                    BorderStroke(1.dp, color = Color.Gray),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(4.dp)
+
+        )
+    }
+}
+
 
 
 
