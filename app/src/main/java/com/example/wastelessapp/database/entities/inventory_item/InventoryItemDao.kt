@@ -46,4 +46,16 @@ interface InventoryItemDao {
     @Query("SELECT COUNT(*) FROM InventoryItem")
     suspend fun countTotalItems(): Int
 
+    @Query("""
+        SELECT 
+            strftime('%Y-%m', dateAdded) AS month,
+            state,
+            COUNT(*) AS count
+        FROM InventoryItem
+        WHERE dateAdded >= DATE('now', '-12 months')
+        GROUP BY month, state
+        ORDER BY month ASC
+    """)
+    suspend fun getMonthlyStatistics(): List<InventoryItemMonthlyStatistic>
+
 }
