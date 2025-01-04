@@ -79,7 +79,7 @@ fun AddInventoryItemScreen(navController: NavHostController) {
             )
             AutoCompleteTextFieldProducts(
                 onProductSelected = { selectedProduct ->
-                    productName = selectedProduct // Update product name when selected
+                    productName = selectedProduct
                 }
             )
             Text(
@@ -162,7 +162,16 @@ fun AddInventoryItemScreen(navController: NavHostController) {
                 label = { Text("Enter product price (optional)", fontSize = 12.sp) }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = errorMessage,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.Red
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             PrimaryButton("Add Item", onClick = {
                 errorMessage = error(
@@ -172,9 +181,7 @@ fun AddInventoryItemScreen(navController: NavHostController) {
                     price = PriceTextState.text
                 )
 
-                if (errorMessage.isNotEmpty()) {
-                    println("Error: $errorMessage")
-                } else {
+                if (errorMessage.isEmpty()) {
                     // TODO add Item to database
                     navController.navigate(FoodScreen)
                 }
@@ -232,7 +239,7 @@ fun AutoCompleteTextField(
 
 @Composable
 fun AutoCompleteTextFieldProducts(onProductSelected: (String) -> Unit) {
-    val foodItems = listOf("Tomato", "Tuna", "Toast", "Turkey", "Tofu")
+    val foodItems = listOf("Tomato", "Tuna", "Toast", "Turkey", "Tofu") // TODO change this list to the list of products from db
     AutoCompleteTextField(
         items = foodItems,
         modifier = Modifier
