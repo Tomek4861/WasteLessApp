@@ -35,6 +35,9 @@ import androidx.navigation.NavHostController
 import com.example.wastelessapp.ui.components.FoodUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.SecondaryButton
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.ResolverStyle
 import java.util.Calendar
 
 @Serializable
@@ -43,6 +46,10 @@ object AddInventoryItemScreen
 @Composable
 fun AddInventoryItemScreen(navController: NavHostController) {
     var selectedDate by remember { mutableStateOf("") }
+    var productName by remember { mutableStateOf("") }
+    var ProductAmountTextState by remember { mutableStateOf(TextFieldValue("")) }
+    var PriceTextState by remember { mutableStateOf(TextFieldValue("")) }
+    var errorMessage by remember { mutableStateOf("") }
 
     Column (){
 
@@ -70,7 +77,11 @@ fun AddInventoryItemScreen(navController: NavHostController) {
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
-            AutoCompleteTextFieldProducts()
+            AutoCompleteTextFieldProducts(
+                onProductSelected = { selectedProduct ->
+                    productName = selectedProduct // Update product name when selected
+                }
+            )
             Text(
                 text = "Search by name",
                 fontSize = 12.sp
@@ -86,11 +97,14 @@ fun AddInventoryItemScreen(navController: NavHostController) {
             Row (
 
             ){
-                UnitOption("Grams", FoodUnit.GRAM)
+                UnitOption("g", FoodUnit.GRAM)
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("Milliliters", FoodUnit.MILLILITER)
+                UnitOption("kg", FoodUnit.MILLILITER)
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("Pieces", FoodUnit.PCS)
+                UnitOption("ml", FoodUnit.MILLILITER)
+                Spacer(modifier = Modifier.width(8.dp))
+                UnitOption("pcs", FoodUnit.PCS)
+                // TODO change foodUnits to the ones from db
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -100,7 +114,7 @@ fun AddInventoryItemScreen(navController: NavHostController) {
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
-            var ProductAmountTextState by remember { mutableStateOf(TextFieldValue("")) }
+
             TextField(
                 value = ProductAmountTextState,
                 onValueChange = {
@@ -136,7 +150,7 @@ fun AddInventoryItemScreen(navController: NavHostController) {
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
-            var PriceTextState by remember { mutableStateOf(TextFieldValue("")) }
+
             TextField(
                 value = PriceTextState,
                 onValueChange = {
@@ -151,8 +165,19 @@ fun AddInventoryItemScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             PrimaryButton("Add Item", onClick = {
-                // TODO add Item to database
-                navController.navigate(FoodScreen)
+                errorMessage = error(
+                    productName = productName,
+                    amount = ProductAmountTextState.text,
+                    expDate = selectedDate,
+                    price = PriceTextState.text
+                )
+
+                if (errorMessage.isNotEmpty()) {
+                    println("Error: $errorMessage")
+                } else {
+                    // TODO add Item to database
+                    navController.navigate(FoodScreen)
+                }
             }
                 , width = 400.dp)
 
@@ -180,8 +205,7 @@ fun AutoCompleteTextField(
                 textState = it
                 expanded = filteredItems.isNotEmpty() // Show dropdown if there are suggestions
             },
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             label = { Text("Start typing product name...") }
         )
 
@@ -193,9 +217,9 @@ fun AutoCompleteTextField(
             filteredItems.forEach { item ->
                 DropdownMenuItem(
                     onClick = {
-                        textState = TextFieldValue(item)
+                        textState = TextFieldValue(item) // Update text field with selected item
                         expanded = false
-                        onItemSelected(item)
+                        onItemSelected(item) // Notify parent composable of selection
                     },
                     text = { Text(item) }
                 )
@@ -205,25 +229,28 @@ fun AutoCompleteTextField(
 }
 
 
+
 @Composable
-fun AutoCompleteTextFieldProducts() {
+fun AutoCompleteTextFieldProducts(onProductSelected: (String) -> Unit) {
     val foodItems = listOf("Tomato", "Tuna", "Toast", "Turkey", "Tofu")
     AutoCompleteTextField(
         items = foodItems,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
-    ) { selectedItem ->
-        println("Selected Item: $selectedItem")
-    }
+            .padding(4.dp),
+        onItemSelected = { selectedItem ->
+            onProductSelected(selectedItem) // Notify parent composable of selection
+        }
+    )
 }
+
 
 @Composable
 fun UnitOption(
     text: String,
     value: FoodUnit
 ) {
-    SecondaryButton(text = text, onClick = { /* TODO: */ }, width = 100.dp, fontSize = 12.sp)
+    SecondaryButton(text = text, onClick = { /* TODO: change chosen foodUnit */ }, width = 75.dp, fontSize = 12.sp)
 }
 
 @Composable
@@ -237,7 +264,7 @@ fun DatePickerField(selectedDate: String, onDateSelected: (String) -> Unit) {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        android.app.DatePickerDialog(
+        val datePickerDialog = android.app.DatePickerDialog(
             context,
             { _, selectedYear, selectedMonth, selectedDay ->
                 val date = "$selectedYear-${selectedMonth + 1}-$selectedDay"
@@ -247,7 +274,13 @@ fun DatePickerField(selectedDate: String, onDateSelected: (String) -> Unit) {
             year,
             month,
             day
-        ).show()
+        )
+
+        datePickerDialog.setOnCancelListener {
+            datePickerState.value = false // Reset state on cancel
+        }
+
+        datePickerDialog.show()
     }
 
     Row(
@@ -269,6 +302,57 @@ fun DatePickerField(selectedDate: String, onDateSelected: (String) -> Unit) {
     }
 }
 
+fun error(
+    productName: String,
+    amount: String,
+    expDate: String,
+    price: String
+): String {
 
+    if (productName.isEmpty()){
+        return "Product name is required!"
+    }
+
+    if (amount.isEmpty()){
+        return "Product amount is required!"
+    }
+
+    try {
+        val intAmount = amount.toInt()
+        if (intAmount < 0){
+            return "Amount can't be negative!"
+        }
+    }
+    catch (e: NumberFormatException) {
+        return "Incorrect amount!"
+    }
+
+    if (expDate.isEmpty()){
+        return "Expiration date is required!"
+    }
+
+    val formatter = DateTimeFormatter.ofPattern("yyyy-M-d").withResolverStyle(ResolverStyle.LENIENT)
+    val expDateParsed = LocalDate.parse(expDate, formatter)
+    val today = LocalDate.now()
+
+    if(expDateParsed.isBefore(today)){
+        return "Expiration date can't be in the past!"
+    }
+
+    if (price.isNotEmpty()){
+        try {
+            val intPrice = price.toDouble()
+            if (intPrice < 0){
+                return "Price can't be negative!"
+            }
+        }
+        catch (e: NumberFormatException){
+            return "Incorrect price!"
+        }
+    }
+
+    return ""
+
+}
 
 
