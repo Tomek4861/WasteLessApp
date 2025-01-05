@@ -59,14 +59,6 @@ fun StatisticsScreen() {
         ){
 
             Text(
-                "Your Statistics",
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
                 "Last 30 days:",
                 fontWeight = FontWeight.Medium,
                 fontSize = 18.sp
@@ -79,7 +71,9 @@ fun StatisticsScreen() {
             StatisticsRow("Items lost", "2")
             HorizontalDivider(thickness = 2.dp)
             StatisticsRow("Percentage of items lost", "2.0%")
-            // TODO change values to ones from queries
+            HorizontalDivider(thickness = 2.dp)
+            StatisticsRow("Money lost", "135" + " PLN")
+            // TODO change values to ones from queries (last month)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -96,7 +90,9 @@ fun StatisticsScreen() {
             StatisticsRow("Items lost", "113")
             HorizontalDivider(thickness = 2.dp)
             StatisticsRow("Percentage of items lost", "6.7%")
-            // TODO change values to ones from queries
+            HorizontalDivider(thickness = 2.dp)
+            StatisticsRow("Money lost", "1638" + " PLN")
+            // TODO change values to ones from queries (all time)
 
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -106,7 +102,17 @@ fun StatisticsScreen() {
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            Chart()
+            Chart(listOf(4, 12, 8, 16, 24, 78, 50, 63, 5, 13, 24, 46)) // TODO change this list with a list of actual values from query (lost items)
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                "Lost money this year",
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Chart(listOf(4, 12, 8, 16, 24, 78, 50, 63, 5, 13, 24, 46)) // TODO change this list with a list of actual values from query (lost money)
 
         }
     }
@@ -139,17 +145,9 @@ fun StatisticsRow(
 }
 
 @Composable
-fun Chart() {
-//    val modelProducer = remember { CartesianChartModelProducer() }
-//    LaunchedEffect(Unit) {
-//        modelProducer.runTransaction { columnSeries { series(4, 12, 8, 16) } }
-//    }
-//    CartesianChartHost(
-//        rememberCartesianChart(
-//            rememberColumnCartesianLayer(),
-//        ),
-//        modelProducer,
-//    )
+fun Chart(
+    values: Collection<Number>
+) {
 
     val modelProducer = remember { CartesianChartModelProducer() }
 
@@ -157,7 +155,7 @@ fun Chart() {
         modelProducer.runTransaction {
             columnSeries {
                 series(
-                    y = listOf(4, 12, 8, 16, 24, 78, 50, 63, 5, 13, 24, 46), // TODO change this list with a list of actual values from query
+                    y = values,
                     x = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
                 )
             }
