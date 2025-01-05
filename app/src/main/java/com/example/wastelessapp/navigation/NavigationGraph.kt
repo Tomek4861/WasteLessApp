@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.wastelessapp.screens.AddInventoryItemScreen
 import com.example.wastelessapp.screens.FoodScreen
 import com.example.wastelessapp.screens.FoodInventoryScreen
 import com.example.wastelessapp.screens.HomeScreen
@@ -44,7 +45,7 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
             HomeScreen()
         }
         composable<FoodScreen> {
-            FoodInventoryScreen()
+            FoodInventoryScreen(navController = navController)
         }
         composable<StatisticsScreen>{
             StatisticsScreen()
@@ -54,6 +55,9 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
         }
         composable<SettingsScreen> {
             SettingsScreen()
+        }
+        composable<AddInventoryItemScreen> {
+            AddInventoryItemScreen(navController = navController)
         }
     }
 }

@@ -11,13 +11,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.wastelessapp.ui.components.CustomTopAppBar
 import com.example.wastelessapp.ui.components.CustomDropdownMenu
 import com.example.wastelessapp.ui.components.FoodInventoryItem
@@ -42,10 +45,15 @@ fun getRandomExpiryDate(): LocalDateTime {
     return now.plus(randomDays.toLong(), ChronoUnit.DAYS)
 }
 
+//private val showAddInventoryItemScreen = mutableStateOf(false)
 
-@Preview
 @Composable
-fun FoodInventoryScreen() {
+fun FoodInventoryScreen(navController: NavHostController) {
+
+//    if(showAddInventoryItemScreen.value){
+//        AddInventoryItemScreen()
+//    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround,
@@ -109,7 +117,10 @@ fun FoodInventoryScreen() {
             ) {
             PrimaryButton(
                 text = "Add Item",
-                onClick = { /*TODO*/ },
+                onClick = {
+                    //showAddInventoryItemScreen.value = true
+                    navController.navigate(AddInventoryItemScreen)
+                },
                 width = 200.dp,
             )
 
