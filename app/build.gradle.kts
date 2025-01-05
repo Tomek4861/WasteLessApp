@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.navigation.dynamic.features.fragment)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.monitor)
+    implementation(libs.androidx.room.common)
 
     // Testing Navigation
     androidTestImplementation(libs.androidx.navigation.testing)
