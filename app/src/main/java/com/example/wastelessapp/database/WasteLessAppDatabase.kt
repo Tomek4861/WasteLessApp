@@ -5,8 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItem
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemDao
-import com.example.wastelessapp.database.entities.inventory_item.ItemStateConverters
-import com.example.wastelessapp.database.entities.inventory_item.ItemUnitConverters
+import com.example.wastelessapp.database.entities.inventory_item.ItemConverters
 import com.example.wastelessapp.database.entities.product.Product
 import com.example.wastelessapp.database.entities.product.ProductDao
 import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartDao
@@ -18,11 +17,12 @@ import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartItem
         Product::class,
         ShoppingCartItem::class
     ],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
-@TypeConverters(ItemStateConverters::class, ItemUnitConverters::class)
+@TypeConverters(ItemConverters::class)
 abstract class WasteLessAppDatabase : RoomDatabase() {
     abstract val inventoryItemDao: InventoryItemDao
-    abstract val ProductDao: ProductDao
-    abstract val ShoppingCartDao: ShoppingCartDao
+    abstract val productDao: ProductDao
+    abstract val shoppingCartDao: ShoppingCartDao
 }

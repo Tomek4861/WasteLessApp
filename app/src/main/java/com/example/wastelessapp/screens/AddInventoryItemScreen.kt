@@ -15,26 +15,31 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import kotlinx.serialization.Serializable
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavHostController
+import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.SecondaryButton
+import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.ResolverStyle
@@ -44,13 +49,18 @@ import java.util.Calendar
 object AddInventoryItemScreen
 
 @Composable
-fun AddInventoryItemScreen(navController: NavHostController) {
+fun AddInventoryItemScreen(
+    navController: NavHostController,
+    inventoryItemViewModel: InventoryItemViewModel
+) {
+    val state by inventoryItemViewModel.state.collectAsState()
+
     var selectedDate by remember { mutableStateOf("") }
     var productName by remember { mutableStateOf("") }
     var ProductAmountTextState by remember { mutableStateOf(TextFieldValue("")) }
     var PriceTextState by remember { mutableStateOf(TextFieldValue("")) }
     var errorMessage by remember { mutableStateOf("") }
-    var selectedItemUnit by remember { mutableStateOf(ItemUnit.GRAMMS) }
+    var selectedItemUnit by remember { mutableStateOf(ItemUnit.GRAMS) }
 
     Column (){
 
@@ -98,9 +108,9 @@ fun AddInventoryItemScreen(navController: NavHostController) {
             Row (
 
             ){
-                UnitOption("g", ItemUnit.GRAMMS) { selectedItemUnit = it }
+                UnitOption("g", ItemUnit.GRAMS) { selectedItemUnit = it }
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("kg", ItemUnit.KILOGRAMMS) { selectedItemUnit = it }
+                UnitOption("kg", ItemUnit.KILOGRAMS) { selectedItemUnit = it }
                 Spacer(modifier = Modifier.width(8.dp))
                 UnitOption("l", ItemUnit.LITERS) { selectedItemUnit = it }
                 Spacer(modifier = Modifier.width(8.dp))

@@ -23,14 +23,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.wastelessapp.ui.components.CustomTopAppBar
+import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.ui.components.FoodInventoryItem
 import com.example.wastelessapp.ui.components.FoodItem
 import com.example.wastelessapp.ui.components.FoodUnit
@@ -42,9 +43,13 @@ import java.time.LocalDateTime
 @Serializable
 object HomeScreen
 
-@Preview
+
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    inventoryItemViewModel: InventoryItemViewModel
+) {
+    val state by inventoryItemViewModel.state.collectAsState()
+
     Column(
 
     )
