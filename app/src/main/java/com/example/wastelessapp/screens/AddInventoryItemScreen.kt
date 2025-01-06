@@ -50,6 +50,7 @@ fun AddInventoryItemScreen(navController: NavHostController) {
     var ProductAmountTextState by remember { mutableStateOf(TextFieldValue("")) }
     var PriceTextState by remember { mutableStateOf(TextFieldValue("")) }
     var errorMessage by remember { mutableStateOf("") }
+    var selectedFoodUnit by remember { mutableStateOf(FoodUnit.GRAM) }
 
     Column (){
 
@@ -97,14 +98,13 @@ fun AddInventoryItemScreen(navController: NavHostController) {
             Row (
 
             ){
-                UnitOption("g", FoodUnit.GRAM)
+                UnitOption("g", FoodUnit.GRAM) { selectedFoodUnit = it }
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("kg", FoodUnit.MILLILITER)
+                UnitOption("kg", FoodUnit.KILOGRAM) { selectedFoodUnit = it }
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("ml", FoodUnit.MILLILITER)
+                UnitOption("ml", FoodUnit.MILLILITER) { selectedFoodUnit = it }
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("pcs", FoodUnit.PCS)
-                // TODO change foodUnits to the ones from db
+                UnitOption("pcs", FoodUnit.PCS) { selectedFoodUnit = it }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -255,9 +255,15 @@ fun AutoCompleteTextFieldProducts(onProductSelected: (String) -> Unit) {
 @Composable
 fun UnitOption(
     text: String,
-    value: FoodUnit
+    value: FoodUnit,
+    onUnitChange: (FoodUnit) -> Unit
 ) {
-    SecondaryButton(text = text, onClick = { /* TODO: change chosen foodUnit */ }, width = 75.dp, fontSize = 12.sp)
+    SecondaryButton(
+        text = text,
+        onClick = { onUnitChange(value) },
+        width = 75.dp,
+        fontSize = 12.sp
+    )
 }
 
 @Composable
