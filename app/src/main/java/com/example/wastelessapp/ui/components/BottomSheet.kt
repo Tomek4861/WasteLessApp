@@ -24,6 +24,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -153,9 +154,6 @@ fun BottomSheet(
                     icons = icons,
                     onIconSelected = { onEvent(ProductEvent.SetIconResId(it)) },
                     selectedIcon = state.iconResId
-//                    Old version
-//                    onIconSelected = { onEvent(ProductEvent.SetIcon(it)) },
-//                    selectedIcon = state.iconResId
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Row(
@@ -211,7 +209,7 @@ fun ScrollableIconRow(
                     )
             ) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(id = iconResId),
+                    painter = painterResource(id = iconResId),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
