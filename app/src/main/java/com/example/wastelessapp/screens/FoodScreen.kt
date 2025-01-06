@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -19,13 +20,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.wastelessapp.database.entities.inventory_item.InventoryItemEvent
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
+import com.example.wastelessapp.database.entities.inventory_item.ItemState
+import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
+import com.example.wastelessapp.database.entities.inventory_item.SortType
 import com.example.wastelessapp.ui.components.CustomDropdownMenu
 import com.example.wastelessapp.ui.components.FoodInventoryItem
 import com.example.wastelessapp.ui.components.FoodItem
 import com.example.wastelessapp.ui.components.FoodUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
+import convertToLocalDateTime
 import kotlinx.serialization.Serializable
+import java.sql.Date
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.random.Random
@@ -34,13 +42,6 @@ import kotlin.random.Random
 object FoodScreen
 
 
-fun getRandomExpiryDate(): LocalDateTime {
-    // random date for testing purposes
-    // gonna be removed in production
-    val now = LocalDateTime.now()
-    val randomDays = Random.nextInt(-3, 4)
-    return now.plus(randomDays.toLong(), ChronoUnit.DAYS)
-}
 
 //private val showAddInventoryItemScreen = mutableStateOf(false)
 
@@ -75,7 +76,10 @@ fun FoodInventoryScreen(
                 modifier = Modifier.padding(start = 3.dp)
 
                 )
-            CustomDropdownMenu(listOf("Expiration", "Alphabetical",), { /*TODO*/ })
+            CustomDropdownMenu(
+                SortType.entries.toTypedArray(),
+               { inventoryItemViewModel.onEvent(InventoryItemEvent.SortProducts(it)) })
+
 
         }
 
@@ -86,23 +90,29 @@ fun FoodInventoryScreen(
                 .weight(1f)
                 .padding(10.dp)
 
+
         ) {
-            items(50) { item ->
+            items(state.inventoryItems) {
+                item ->
                 FoodInventoryItem(
                     item =
                     FoodItem(
-                        id = item,
-                        name = "apple",
-                        quantity = 500,
-                        unit = FoodUnit.GRAM,
-                        price = 1.0,
-                        expiryDate = getRandomExpiryDate(),
-                        purchaseDate = LocalDateTime.now()
-                    )
+                        id = item.id,
+                        name = item.product,
+                        quantity = item.amount,
+                        unit = item.itemUnit,
+                        price = item.price,
+                        expiryDate = convertToLocalDateTime(item.expirationDate),
+                        purchaseDate = convertToLocalDateTime(item.dateAdded),
+                    ),
+                    //TODO: Update the item state to saved onCheck
+                    onCheck = { inventoryItemViewModel.onEvent(InventoryItemEvent.UpdateItemState(item)) },
+                    onDelete = { inventoryItemViewModel.onEvent(InventoryItemEvent.DeleteInventoryItem(item)) }
                 )
 
             }
         }
+
 
 
         Spacer(modifier = Modifier.height(8.dp))

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
+import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartViewModel
 import com.example.wastelessapp.ui.components.CustomDropdownMenu
 import com.example.wastelessapp.ui.components.FoodUnit
@@ -68,7 +70,7 @@ fun ShoppingListScreen(
                 modifier = Modifier.padding(start = 3.dp)
 
             )
-            CustomDropdownMenu(listOf("Expiration", "Alphabetical"), { /*TODO*/ })
+//            CustomDropdownMenu(listOf("Expiration", "Alphabetical"), { /*TODO*/ })
 
         }
 
@@ -81,14 +83,14 @@ fun ShoppingListScreen(
                 .padding(10.dp)
 
         ) {
-            items(50) { item ->
+            items(shoppingCartState.shoppingCartItems) { item ->
                 ShoppingListItem(
                     item =
                     ShoppingItem(
-                        id = item,
-                        name = "apple",
-                        quantity = 5,
-                        unit = FoodUnit.PCS
+                        id = item.id,
+                        name = item.product,
+                        quantity =  item.amount,
+                        unit = item.itemUnit,
                     )
                 )
 

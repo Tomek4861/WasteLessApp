@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import com.example.wastelessapp.ui.components.BaseItem
 import com.example.wastelessapp.ui.components.FoodUnit
 
@@ -36,8 +37,8 @@ import com.example.wastelessapp.ui.components.FoodUnit
 data class ShoppingItem(
     override val id: Int,
     override val name: String,
-    override val quantity: Int,
-    override val unit: FoodUnit,
+    override val quantity: Float,
+    override val unit: ItemUnit,
     var isChecked: Boolean = false,
 ): BaseItem(id, name, quantity, unit)
 

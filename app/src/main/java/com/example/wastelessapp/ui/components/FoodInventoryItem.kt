@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -33,9 +34,9 @@ import java.time.temporal.ChronoUnit
 data class FoodItem(
     override val id: Int,
     override val name: String,
-    override val quantity: Int,
-    override val unit: FoodUnit,
-    val price: Double,
+    override val quantity: Float,
+    override val unit: ItemUnit,
+    val price: Float?,
     val expiryDate: LocalDateTime,
     val purchaseDate: LocalDateTime,
 
@@ -76,7 +77,7 @@ data class FoodItem(
 }
 
 @Composable
-fun FoodInventoryItem(item: FoodItem) {
+fun FoodInventoryItem(item: FoodItem, onCheck: (FoodItem) -> Unit, onDelete: (FoodItem) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -130,7 +131,7 @@ fun FoodInventoryItem(item: FoodItem) {
         )
 
         IconButton(
-            onClick = { /* TODO*/ },
+            onClick = { onCheck(item) },
             modifier = Modifier.size(48.dp) // default size
         ) {
             Icon(
@@ -146,7 +147,7 @@ fun FoodInventoryItem(item: FoodItem) {
 
 
         IconButton(
-            onClick = {  /* TODO*/ },
+            onClick = { onDelete(item) },
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
