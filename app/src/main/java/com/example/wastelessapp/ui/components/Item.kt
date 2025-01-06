@@ -9,7 +9,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 enum class FoodUnit {
     PCS,
     GRAM,
-    MILLILITER
+    MILLILITER,
+    KILOGRAM
 }
 
 open class BaseItem(
@@ -26,6 +27,7 @@ open class BaseItem(
             FoodUnit.PCS -> "$quantity pcs"
             FoodUnit.GRAM -> "${quantity}g"
             FoodUnit.MILLILITER -> "${quantity}ml"
+            FoodUnit.KILOGRAM -> "${quantity}kg"
         }
     }
 
