@@ -32,7 +32,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavHostController
-import com.example.wastelessapp.ui.components.FoodUnit
+import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.SecondaryButton
 import java.time.LocalDate
@@ -50,6 +50,7 @@ fun AddInventoryItemScreen(navController: NavHostController) {
     var ProductAmountTextState by remember { mutableStateOf(TextFieldValue("")) }
     var PriceTextState by remember { mutableStateOf(TextFieldValue("")) }
     var errorMessage by remember { mutableStateOf("") }
+    var selectedItemUnit by remember { mutableStateOf(ItemUnit.GRAMMS) }
 
     Column (){
 
@@ -97,14 +98,13 @@ fun AddInventoryItemScreen(navController: NavHostController) {
             Row (
 
             ){
-                UnitOption("g", FoodUnit.GRAM)
+                UnitOption("g", ItemUnit.GRAMMS) { selectedItemUnit = it }
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("kg", FoodUnit.MILLILITER)
+                UnitOption("kg", ItemUnit.KILOGRAMMS) { selectedItemUnit = it }
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("ml", FoodUnit.MILLILITER)
+                UnitOption("l", ItemUnit.LITERS) { selectedItemUnit = it }
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("pcs", FoodUnit.PCS)
-                // TODO change foodUnits to the ones from db
+                UnitOption("pcs", ItemUnit.PIECES) { selectedItemUnit = it }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -255,9 +255,15 @@ fun AutoCompleteTextFieldProducts(onProductSelected: (String) -> Unit) {
 @Composable
 fun UnitOption(
     text: String,
-    value: FoodUnit
+    value: ItemUnit,
+    onUnitChange: (ItemUnit) -> Unit
 ) {
-    SecondaryButton(text = text, onClick = { /* TODO: change chosen foodUnit */ }, width = 75.dp, fontSize = 12.sp)
+    SecondaryButton(
+        text = text,
+        onClick = { onUnitChange(value) },
+        width = 75.dp,
+        fontSize = 12.sp
+    )
 }
 
 @Composable
