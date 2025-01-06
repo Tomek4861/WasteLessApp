@@ -12,8 +12,8 @@ data class InventoryItem(
     var product: String,
     var itemUnit: ItemUnit,
     var amount: Float,
-    var dateAdded: Date = Date.valueOf(LocalDate.now().toString()),
-    var expirationDate: Date,
+    var dateAdded: String = Date.valueOf(LocalDate.now().toString()).toString(),
+    var expirationDate: String,
     var price: Float?,
     var state: ItemState = ItemState.ACTIVE
 )

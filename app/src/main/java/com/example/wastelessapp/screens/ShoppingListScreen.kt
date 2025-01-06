@@ -11,13 +11,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
+import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartViewModel
 import com.example.wastelessapp.ui.components.CustomDropdownMenu
 import com.example.wastelessapp.ui.components.FoodUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
@@ -32,9 +35,16 @@ object ShoppingListScreen
 val horizontalPaddingBetweenButtons = 32.dp
 val buttonWidth = 150.dp
 
-@Preview // allows to preview without compiling the app
 @Composable
-fun ShoppingListScreen() {
+fun ShoppingListScreen(
+    shoppingCartViewModel: ShoppingCartViewModel,
+    inventoryItemViewModel: InventoryItemViewModel
+) {
+    val shoppingCartState by shoppingCartViewModel.state.collectAsState()
+
+    //Needed here for method MoveShoppingCartItem
+    val inventoryItemState by inventoryItemViewModel.state.collectAsState()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround,

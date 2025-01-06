@@ -15,6 +15,7 @@ serialization = "1.6.3"
 composeMaterial = "1.4.0"
 monitor = "1.7.2"
 roomCommon = "2.6.1"
+vicoVersion = "2.0.0-beta.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -24,8 +25,14 @@ androidx-navigation-dynamic-features-fragment = { module = "androidx.navigation:
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationCompose" }
 androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigationCompose" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationCompose" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-room-testing = { module = "androidx.room:room-testing" }
+compose = { module = "com.patrykandpatrick.vico:compose", version.ref = "vicoVersion" }
+compose-m2 = { module = "com.patrykandpatrick.vico:compose-m2", version.ref = "vicoVersion" }
+compose-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vicoVersion" }
+core = { module = "com.patrykandpatrick.vico:core", version.ref = "vicoVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -43,6 +50,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
 androidx-monitor = { group = "androidx.test", name = "monitor", version.ref = "monitor" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
+views = { module = "com.patrykandpatrick.vico:views", version.ref = "vicoVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -64,7 +64,7 @@ class InventoryItemViewModel(
                     product = product,
                     itemUnit = unit,
                     amount = amount,
-                    expirationDate = expirationDate,
+                    expirationDate = expirationDate.toString(),
                     price = price
                 )
                 viewModelScope.launch {
@@ -142,7 +142,7 @@ class InventoryItemViewModel(
 
             is InventoryItemEvent.UpdateItemState -> {
                 val state: ItemState =
-                    if (Date.valueOf(LocalDate.now().toString()) <= event.inventoryItem.expirationDate) {
+                    if (Date.valueOf(LocalDate.now().toString()) <= Date.valueOf(event.inventoryItem.expirationDate)) {
                         ItemState.SAVED
                     } else {
                         ItemState.EXPIRED
@@ -167,5 +167,25 @@ class InventoryItemViewModel(
                 }
             }
         }
+    }
+
+    suspend fun countItemsInLast30DaysByState(state: ItemState): Int {
+        return dao.countItemsInLast30DaysByState(state)
+    }
+
+    suspend fun countAllItemsByState(state: ItemState): Int {
+        return dao.countAllItemsByState(state)
+    }
+
+    suspend fun countTotalItemsInLast30Days(): Int {
+        return dao.countTotalItemsInLast30Days()
+    }
+
+    suspend fun countTotalItems(): Int {
+        return dao.countTotalItems()
+    }
+
+    suspend fun getMonthlyStatistics(): List<InventoryItemMonthlyStatistic> {
+        return dao.getMonthlyStatistics()
     }
 }

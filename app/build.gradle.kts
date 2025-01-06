@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -87,21 +88,22 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.room.runtime)
     testImplementation(libs.androidx.room.testing)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
-    val vicoVersion = "2.0.0-beta.7"
     // For Jetpack Compose.
-    implementation("com.patrykandpatrick.vico:compose:$vicoVersion")
+    implementation(libs.compose)
 
     // For Material 2 theming in Jetpack Compose.
-    implementation("com.patrykandpatrick.vico:compose-m2:$vicoVersion")
+    implementation(libs.compose.m2)
 
     // For Material 3 theming in Jetpack Compose.
-    implementation("com.patrykandpatrick.vico:compose-m3:$vicoVersion")
+    implementation(libs.compose.m3)
 
     /* Houses the core logic. This is included in all other modules, so add it explicitly
     only in the unlikely event that you don’t need anything else. */
-    implementation("com.patrykandpatrick.vico:core:$vicoVersion")
+    implementation(libs.core)
 
     // For the view system.
-    implementation("com.patrykandpatrick.vico:views:$vicoVersion")
+    implementation(libs.views)
 }

@@ -7,27 +7,24 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.wastelessapp.ui.components.CustomTopAppBar
+import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.ui.components.CustomDropdownMenu
 import com.example.wastelessapp.ui.components.FoodInventoryItem
 import com.example.wastelessapp.ui.components.FoodItem
 import com.example.wastelessapp.ui.components.FoodUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
-import com.example.wastelessapp.ui.components.SecondaryButton
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
@@ -48,11 +45,11 @@ fun getRandomExpiryDate(): LocalDateTime {
 //private val showAddInventoryItemScreen = mutableStateOf(false)
 
 @Composable
-fun FoodInventoryScreen(navController: NavHostController) {
-
-//    if(showAddInventoryItemScreen.value){
-//        AddInventoryItemScreen()
-//    }
+fun FoodInventoryScreen(
+    navController: NavHostController,
+    inventoryItemViewModel: InventoryItemViewModel
+) {
+    val state by inventoryItemViewModel.state.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -1,9 +1,8 @@
 package com.example.wastelessapp.database.entities.product
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.wastelessapp.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +15,7 @@ import kotlinx.coroutines.launch
 class ProductViewModel(
     private val dao: ProductDao
 ) : ViewModel() {
-    private val _products = dao.getProducts()
+    private val _products = dao.getProductsByName()
     private val _state = MutableStateFlow(ProductState())
 
     val state = combine(_state, _products) { state, products ->
@@ -43,14 +42,11 @@ class ProductViewModel(
 
             ProductEvent.SaveProduct -> {
                 val name = state.value.name
-                val icon = state.value.icon
-
-                //if (name.isBlank())
-                //    return
+                val iconResId = state.value.iconResId
 
                 val product = Product(
                     name = name,
-                    icon = icon
+                    iconResId = iconResId
                 )
                 viewModelScope.launch {
                     dao.upsertProduct(product)
@@ -58,14 +54,14 @@ class ProductViewModel(
                 _state.update { it.copy(
                     isAddingProduct = false,
                     name = "",
-                    icon = Icons.Filled.AddCircle
+                    iconResId = R.drawable.dish_spoon_knife_icon
                 ) }
             }
 
-            is ProductEvent.SetIcon -> {
+            is ProductEvent.SetIconResId -> {
                 _state.update {
                     it.copy(
-                        icon = event.icon
+                        iconResId = event.iconResId
                     )
                 }
             }
