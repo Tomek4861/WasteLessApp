@@ -3,6 +3,7 @@ package com.example.wastelessapp.database.entities.shopping_cart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
+import com.example.wastelessapp.database.entities.product.ProductDao
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,7 +15,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ShoppingCartViewModel(
-    private val shoppingCartDao: ShoppingCartDao
+    private val shoppingCartDao: ShoppingCartDao,
+    private val productDao: ProductDao
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(ShoppingCartSortType.NAME)
     private val _shoppingCartItems = _sortType
@@ -58,7 +60,8 @@ class ShoppingCartViewModel(
                 val shoppingCartItem = ShoppingCartItem(
                     product = product,
                     itemUnit = unit,
-                    amount = amount
+                    amount = amount,
+                    iconResId = productDao.getIconResIdByProductName(product)!!
                 )
                 viewModelScope.launch {
                     shoppingCartDao.upsertShoppingCartItem(shoppingCartItem)

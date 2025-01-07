@@ -10,5 +10,6 @@ data class ShoppingCartItem(
     val id: Int = 0,
     val product: String,
     var itemUnit: ItemUnit,
-    var amount: Float
+    var amount: Float,
+    var iconResId: Int
 )
