@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 private val Context.preferenceDataStore by preferencesDataStore(name = "settings")
@@ -48,4 +49,9 @@ class SettingsManager(private val context: Context) {
         println("Loaded sound = $value")
         value
     }
+
+    suspend fun getNotificationSound(): String {
+        return notificationSound.first()
+    }
+
 }

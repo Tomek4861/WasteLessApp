@@ -33,6 +33,7 @@ import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartView
 import com.example.wastelessapp.navigation.BottomNavigationBar
 import com.example.wastelessapp.navigation.BottomNavigationItem
 import com.example.wastelessapp.navigation.NavigationGraph
+import com.example.wastelessapp.notifications.createNotificationChannels
 import com.example.wastelessapp.screens.FoodScreen
 import com.example.wastelessapp.screens.HomeScreen
 import com.example.wastelessapp.screens.SettingsScreen
@@ -85,6 +86,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        createNotificationChannels(this)
         enableEdgeToEdge()
         setContent {
             WasteLessAppTheme {
