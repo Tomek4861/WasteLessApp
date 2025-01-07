@@ -9,5 +9,6 @@ sealed interface ShoppingCartEvent {
     data class SetAmount(val amount: Float) : ShoppingCartEvent
     data object ShowDialog : ShoppingCartEvent
     data object HideDialog : ShoppingCartEvent
+    data class SortProducts(val sortType: ShoppingCartSortType) : ShoppingCartEvent
     data class DeleteShoppingCartItem(val shoppingCartItem: ShoppingCartItem) : ShoppingCartEvent
 }

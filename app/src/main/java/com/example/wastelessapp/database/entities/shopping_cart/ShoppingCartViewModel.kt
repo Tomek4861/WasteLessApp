@@ -7,6 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -15,12 +16,21 @@ import kotlinx.coroutines.launch
 class ShoppingCartViewModel(
     private val shoppingCartDao: ShoppingCartDao
 ) : ViewModel() {
-    private val _shoppingCartItems = shoppingCartDao.getShoppingCartItems()
+    private val _sortType = MutableStateFlow(ShoppingCartSortType.NAME)
+    private val _shoppingCartItems = _sortType
+        .flatMapLatest { sortType ->
+            when (sortType) {
+                ShoppingCartSortType.NAME -> shoppingCartDao.getShoppingCartItemsByName()
+                ShoppingCartSortType.DATE_ADDED -> shoppingCartDao.getShoppingCartItemsByIdOrder()
+            }
+        }
+
     private val _state = MutableStateFlow(ShoppingCartState())
 
-    val state = combine(_state, _shoppingCartItems) { state, shoppingCartItems ->
+    val state = combine(_state, _sortType, _shoppingCartItems) { state, sortType, shoppingCartItems ->
         state.copy(
-            shoppingCartItems = shoppingCartItems
+            shoppingCartItems = shoppingCartItems,
+            sortType = sortType
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ShoppingCartState())
 
@@ -93,6 +103,10 @@ class ShoppingCartViewModel(
                         isAddingItem = true
                     )
                 }
+            }
+
+            is ShoppingCartEvent.SortProducts -> {
+                _sortType.value = event.sortType
             }
         }
     }
