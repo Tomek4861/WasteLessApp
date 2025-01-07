@@ -8,4 +8,5 @@ data class ShoppingCartState (
     val itemUnit: ItemUnit = ItemUnit.PIECES,
     val amount: Float = 0f,
     val isAddingItem: Boolean = false,
+    val sortType: ShoppingCartSortType = ShoppingCartSortType.NAME
 )

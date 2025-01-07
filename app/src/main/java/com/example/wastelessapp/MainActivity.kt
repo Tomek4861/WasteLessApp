@@ -76,7 +76,7 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ShoppingCartViewModel(db.shoppingCartDao) as T
+                    return ShoppingCartViewModel(db.shoppingCartDao, db.productDao) as T
                 }
             }
         }

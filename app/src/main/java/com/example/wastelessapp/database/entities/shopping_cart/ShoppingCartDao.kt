@@ -18,7 +18,12 @@ interface ShoppingCartDao {
 
     @Transaction
     @Query("SELECT * FROM shoppingcartitem ORDER BY product ASC")
-    fun getShoppingCartItems(): Flow<List<ShoppingCartItem>>
+    fun getShoppingCartItemsByName(): Flow<List<ShoppingCartItem>>
 
+    @Query("SELECT * FROM shoppingcartitem ORDER BY id DESC")
+    fun getShoppingCartItemsByIdOrder(): Flow<List<ShoppingCartItem>>
+
+    @Query("DELETE FROM shoppingcartitem")
+    suspend fun deleteAllShoppingCartItems()
 
 }
