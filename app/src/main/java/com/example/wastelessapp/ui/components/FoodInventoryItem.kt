@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,11 +38,12 @@ data class FoodItem(
     override val name: String,
     override val quantity: Float,
     override val unit: ItemUnit,
+    override val iconId: Int,
     val price: Float?,
     val expiryDate: LocalDateTime,
     val purchaseDate: LocalDateTime,
 
-    ) : BaseItem(id, name, quantity, unit) {
+    ) : BaseItem(id, name, quantity, unit, iconId) {
     fun getDaysLeft(): Int {
         return ChronoUnit.DAYS.between(LocalDateTime.now().toLocalDate(), expiryDate.toLocalDate())
             .toInt()
@@ -91,9 +94,10 @@ fun FoodInventoryItem(item: FoodItem, onCheck: (FoodItem) -> Unit, onDelete: (Fo
         horizontalArrangement = Arrangement.Start
 
     ) {
+        val iconObj: ImageVector = ImageVector.vectorResource(id = item.iconId)
         Icon(
-            imageVector = item.icon,
-            contentDescription = item.category,
+            imageVector = iconObj,
+            contentDescription = "Item Icon",
 
             modifier = Modifier.size(48.dp)
         )

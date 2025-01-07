@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             WasteLessAppDatabase::class.java,
             "wastelessapp.db"
-        )   //.addMigrations(MIGRATION_1_2) use only if your app crashes during database schema error
+        )   .addMigrations(MIGRATION_1_2)
             .build()
     }
 

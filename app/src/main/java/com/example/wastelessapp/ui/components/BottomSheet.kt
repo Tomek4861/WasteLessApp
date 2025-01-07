@@ -152,7 +152,9 @@ fun BottomSheet(
 
                 ScrollableIconRow(
                     icons = icons,
-                    onIconSelected = { onEvent(ProductEvent.SetIconResId(it)) },
+                    onIconSelected = {
+                        onEvent(ProductEvent.SetIconResId(it))
+                    },
                     selectedIcon = state.iconResId
                 )
                 Spacer(modifier = Modifier.height(24.dp))

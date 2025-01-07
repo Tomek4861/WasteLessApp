@@ -21,10 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
-import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartViewModel
-import com.example.wastelessapp.ui.components.CustomDropdownMenu
-import com.example.wastelessapp.ui.components.FoodUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.ShoppingItem
 import com.example.wastelessapp.ui.components.ShoppingListItem
@@ -89,8 +86,9 @@ fun ShoppingListScreen(
                     ShoppingItem(
                         id = item.id,
                         name = item.product,
-                        quantity =  item.amount,
+                        quantity = item.amount,
                         unit = item.itemUnit,
+                        iconId = 0, //TODO: Add icon
                     )
                 )
 

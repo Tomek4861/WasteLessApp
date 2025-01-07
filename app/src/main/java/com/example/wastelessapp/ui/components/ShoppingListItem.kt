@@ -23,13 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import com.example.wastelessapp.ui.components.BaseItem
-import com.example.wastelessapp.ui.components.FoodUnit
 
 
 
@@ -39,8 +39,9 @@ data class ShoppingItem(
     override val name: String,
     override val quantity: Float,
     override val unit: ItemUnit,
+    override val iconId: Int,
     var isChecked: Boolean = false,
-): BaseItem(id, name, quantity, unit)
+): BaseItem(id, name, quantity, unit, iconId)
 
 
 @Composable
@@ -54,9 +55,10 @@ fun ShoppingListItem(item: ShoppingItem) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
+        val iconObj: ImageVector = ImageVector.vectorResource(id = item.iconId)
         Icon(
-            imageVector = item.icon,
-            contentDescription = item.category,
+            imageVector = iconObj,
+            contentDescription = "Item Icon",
 
             modifier = Modifier.size(48.dp)
         )

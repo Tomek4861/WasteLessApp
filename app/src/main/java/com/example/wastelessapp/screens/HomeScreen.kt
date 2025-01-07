@@ -42,7 +42,6 @@ import com.example.wastelessapp.database.entities.product.ProductViewModel
 import com.example.wastelessapp.ui.components.BottomSheet
 import com.example.wastelessapp.ui.components.FoodInventoryItem
 import com.example.wastelessapp.ui.components.FoodItem
-import com.example.wastelessapp.ui.components.FoodUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.SecondaryButton
 import kotlinx.serialization.Serializable
@@ -89,7 +88,13 @@ fun HomeScreen(
 
             val sheetState = rememberModalBottomSheetState()
             var isSheetOpen by rememberSaveable { mutableStateOf(false) }
-            BottomSheet(sheetState, isSheetOpen, {isSheetOpen = false}, productState, productViewModel::onEvent)
+            BottomSheet(
+                sheetState,
+                isSheetOpen,
+                { isSheetOpen = false },
+                productState,
+                productViewModel::onEvent
+            )
 
             PrimaryButton(
                 text = "Add New Product",
@@ -307,7 +312,8 @@ fun HomeScreen(
                     unit = ItemUnit.PIECES,
                     price = 5.50f,
                     expiryDate = LocalDateTime.now(),
-                    purchaseDate = LocalDateTime.now()
+                    purchaseDate = LocalDateTime.now(),
+                    iconId = 2131165290,
                 ),
                 onCheck = {},
                 onDelete = {}
@@ -326,7 +332,8 @@ fun HomeScreen(
                         unit = ItemUnit.PIECES,
                         price = 27.30f,
                         expiryDate = LocalDateTime.now(),
-                        purchaseDate = LocalDateTime.now()
+                        purchaseDate = LocalDateTime.now(),
+                        iconId = 2131165290,
                     ),
                     onCheck = {},
                     onDelete = {}
@@ -339,7 +346,8 @@ fun HomeScreen(
                         unit = ItemUnit.PIECES,
                         price = 27.30f,
                         expiryDate = LocalDateTime.now(),
-                        purchaseDate = LocalDateTime.now()
+                        purchaseDate = LocalDateTime.now(),
+                        iconId = 2131165290,
                     ),
                     onCheck = {},
                     onDelete = {}
