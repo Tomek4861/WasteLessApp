@@ -49,7 +49,7 @@ fun NavigationGraph(
             SettingsScreen()
         }
         composable<AddInventoryItemScreen> {
-            AddInventoryItemScreen(navController = navController, inventoryItemViewModel)
+            AddInventoryItemScreen(navController = navController, inventoryItemViewModel, productViewModel)
         }
     }
 }
