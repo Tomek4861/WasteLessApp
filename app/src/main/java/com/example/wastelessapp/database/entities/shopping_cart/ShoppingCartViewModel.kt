@@ -108,6 +108,12 @@ class ShoppingCartViewModel(
             is ShoppingCartEvent.SortProducts -> {
                 _sortType.value = event.sortType
             }
+
+            ShoppingCartEvent.DeleteAllShoppingCartItems -> {
+                viewModelScope.launch {
+                    shoppingCartDao.deleteAllShoppingCartItems()
+                }
+            }
         }
     }
 }
