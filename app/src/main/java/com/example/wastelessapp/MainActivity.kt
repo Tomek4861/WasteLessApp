@@ -26,6 +26,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.wastelessapp.database.WasteLessAppDatabase
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.product.ProductViewModel
@@ -45,12 +47,19 @@ import com.example.wastelessapp.ui.theme.WasteLessAppTheme
 
 class MainActivity : ComponentActivity() {
 
+    val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE InventoryItem ADD COLUMN iconResId INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
     private val db by lazy {
         Room.databaseBuilder(
             applicationContext,
             WasteLessAppDatabase::class.java,
             "wastelessapp.db"
-        ).build()
+        )   //.addMigrations(MIGRATION_1_2) use only if your app crashes during database schema error
+            .build()
     }
 
     private val productViewModel by viewModels<ProductViewModel>(
