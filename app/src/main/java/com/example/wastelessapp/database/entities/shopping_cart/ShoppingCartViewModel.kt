@@ -57,13 +57,13 @@ class ShoppingCartViewModel(
                 val unit = state.value.itemUnit
                 val amount = state.value.amount
 
-                val shoppingCartItem = ShoppingCartItem(
-                    product = product,
-                    itemUnit = unit,
-                    amount = amount,
-                    iconResId = productDao.getIconResIdByProductName(product)!!
-                )
                 viewModelScope.launch {
+                    val shoppingCartItem = ShoppingCartItem(
+                        product = product,
+                        itemUnit = unit,
+                        amount = amount,
+                        iconResId = productDao.getIconResIdByProductName(product)!!
+                    )
                     shoppingCartDao.upsertShoppingCartItem(shoppingCartItem)
                 }
                 _state.update {
