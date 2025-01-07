@@ -29,11 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wastelessapp.R
 import com.example.wastelessapp.database.preferences.SettingsManager
+import com.example.wastelessapp.notifications.NotificationSounds
+import com.example.wastelessapp.notifications.sendNotification
 import com.example.wastelessapp.ui.components.ButtonRow
 import com.example.wastelessapp.ui.components.NotificationSettingsItem
 import com.example.wastelessapp.ui.components.NotificationSettingsRow
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.bottomBorder
+import com.example.wastelessapp.ui.notifications.playSound
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -47,7 +50,9 @@ fun SettingsScreen() {
     val settingsManager = remember { SettingsManager(dataStoreContext) }
 
     val scope = rememberCoroutineScope()
-    val notificationSound = settingsManager.notificationSound.collectAsState(initial = "Meow")
+
+
+    val notificationSound = settingsManager.notificationSound.collectAsState(initial = NotificationSounds.list[0])
     val notification3d =
         settingsManager.getNotificationSetting(SettingsManager.NOTIFICATION_SETTING_3d)
             .collectAsState(initial = false)
@@ -124,13 +129,14 @@ fun SettingsScreen() {
 
                 )
             ButtonRow(
-                buttons = listOf("Meow", "Bell", "Clap", "Tick"),
+                buttons = NotificationSounds.list,
                 currentlySelected = notificationSound.value,
                 buttonWidth = 90.dp,
                 fontSize = 14.sp,
                 onSelected = { selectedSound ->
                     scope.launch {
                         settingsManager.setNotificationSound(selectedSound)
+                        playSound(dataStoreContext, selectedSound)
                     }
                 }
             )
@@ -198,7 +204,10 @@ fun SettingsScreen() {
         ) {
             PrimaryButton(
                 text = "Reset App",
-                onClick = { /*TODO*/ },
+                onClick = {
+                    // Temporary notification for testing
+                    sendNotification(dataStoreContext, "Your Item is About to Expire! ", "Your milk expires tomorrow. Don't forget to use it!")
+                },
                 width = 220.dp
             )
         }

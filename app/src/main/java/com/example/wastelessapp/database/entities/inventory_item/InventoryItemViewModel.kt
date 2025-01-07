@@ -2,6 +2,7 @@ package com.example.wastelessapp.database.entities.inventory_item
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.wastelessapp.database.entities.product.ProductDao
 import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartDao
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,8 @@ import java.time.LocalDate
 @OptIn(ExperimentalCoroutinesApi::class)
 class InventoryItemViewModel(
     private val dao: InventoryItemDao,
-    private val shoppingCartDao: ShoppingCartDao
+    private val shoppingCartDao: ShoppingCartDao,
+    private val productDao: ProductDao
 ) : ViewModel() {
     private val _sortType = MutableStateFlow(SortType.EXPIRATION_DATE)
     private val _inventoryItems = _sortType
@@ -65,7 +67,8 @@ class InventoryItemViewModel(
                     itemUnit = unit,
                     amount = amount,
                     expirationDate = expirationDate.toString(),
-                    price = price
+                    price = price,
+                    iconResId = productDao.getIconResIdByProductName(product)!!
                 )
                 viewModelScope.launch {
                     dao.upsertInventoryItem(inventoryItem)

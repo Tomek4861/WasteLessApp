@@ -22,25 +22,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemEvent
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
-import com.example.wastelessapp.database.entities.inventory_item.ItemState
-import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import com.example.wastelessapp.database.entities.inventory_item.SortType
 import com.example.wastelessapp.ui.components.CustomDropdownMenu
 import com.example.wastelessapp.ui.components.FoodInventoryItem
 import com.example.wastelessapp.ui.components.FoodItem
-import com.example.wastelessapp.ui.components.FoodUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
 import convertToLocalDateTime
 import kotlinx.serialization.Serializable
-import java.sql.Date
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.temporal.ChronoUnit
-import kotlin.random.Random
 
 @Serializable
 object FoodScreen
-
 
 
 //private val showAddInventoryItemScreen = mutableStateOf(false)
@@ -65,9 +56,8 @@ fun FoodInventoryScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 4.dp)
-            ,
-        ){
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+        ) {
             Text(
                 "Sort By:",
                 fontSize = 18.sp,
@@ -75,10 +65,10 @@ fun FoodInventoryScreen(
                 textAlign = TextAlign.Start,
                 modifier = Modifier.padding(start = 3.dp)
 
-                )
+            )
             CustomDropdownMenu(
                 SortType.entries.toTypedArray(),
-               { inventoryItemViewModel.onEvent(InventoryItemEvent.SortProducts(it)) })
+                { inventoryItemViewModel.onEvent(InventoryItemEvent.SortProducts(it)) })
 
 
         }
@@ -92,8 +82,7 @@ fun FoodInventoryScreen(
 
 
         ) {
-            items(state.inventoryItems) {
-                item ->
+            items(state.inventoryItems) { item ->
                 FoodInventoryItem(
                     item =
                     FoodItem(
@@ -104,10 +93,22 @@ fun FoodInventoryScreen(
                         price = item.price,
                         expiryDate = convertToLocalDateTime(item.expirationDate),
                         purchaseDate = convertToLocalDateTime(item.dateAdded),
+                        iconId = item.iconResId,
                     ),
-                    //TODO: Update the item state to saved onCheck
-                    onCheck = { inventoryItemViewModel.onEvent(InventoryItemEvent.UpdateItemState(item)) },
-                    onDelete = { inventoryItemViewModel.onEvent(InventoryItemEvent.DeleteInventoryItem(item)) }
+                    onCheck = {
+                        inventoryItemViewModel.onEvent(
+                            InventoryItemEvent.UpdateItemState(
+                                item
+                            )
+                        )
+                    },
+                    onDelete = {
+                        inventoryItemViewModel.onEvent(
+                            InventoryItemEvent.DeleteInventoryItem(
+                                item
+                            )
+                        )
+                    }
                 )
 
             }

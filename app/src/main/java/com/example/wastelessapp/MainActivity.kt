@@ -26,6 +26,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.wastelessapp.database.WasteLessAppDatabase
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.product.ProductViewModel
@@ -33,6 +35,7 @@ import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartView
 import com.example.wastelessapp.navigation.BottomNavigationBar
 import com.example.wastelessapp.navigation.BottomNavigationItem
 import com.example.wastelessapp.navigation.NavigationGraph
+import com.example.wastelessapp.notifications.createNotificationChannels
 import com.example.wastelessapp.screens.FoodScreen
 import com.example.wastelessapp.screens.HomeScreen
 import com.example.wastelessapp.screens.SettingsScreen
@@ -44,12 +47,19 @@ import com.example.wastelessapp.ui.theme.WasteLessAppTheme
 
 class MainActivity : ComponentActivity() {
 
+    val MIGRATION_1_2 = object : Migration(1, 2) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("ALTER TABLE InventoryItem ADD COLUMN iconResId INTEGER NOT NULL DEFAULT 0")
+        }
+    }
+
     private val db by lazy {
         Room.databaseBuilder(
             applicationContext,
             WasteLessAppDatabase::class.java,
             "wastelessapp.db"
-        ).build()
+        )   .addMigrations(MIGRATION_1_2)
+            .build()
     }
 
     private val productViewModel by viewModels<ProductViewModel>(
@@ -76,7 +86,7 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return InventoryItemViewModel(db.inventoryItemDao, db.shoppingCartDao) as T
+                    return InventoryItemViewModel(db.inventoryItemDao, db.shoppingCartDao, db.productDao) as T
                 }
             }
         }
@@ -85,6 +95,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        createNotificationChannels(this)
         enableEdgeToEdge()
         setContent {
             WasteLessAppTheme {
