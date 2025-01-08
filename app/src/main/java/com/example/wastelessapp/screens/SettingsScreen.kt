@@ -132,7 +132,7 @@ fun SettingsScreen() {
                 buttons = NotificationSounds.list,
                 currentlySelected = notificationSound.value,
                 buttonWidth = 90.dp,
-                fontSize = 14.sp,
+                fontSize = 11.sp,
                 onSelected = { selectedSound ->
                     scope.launch {
                         settingsManager.setNotificationSound(selectedSound)
