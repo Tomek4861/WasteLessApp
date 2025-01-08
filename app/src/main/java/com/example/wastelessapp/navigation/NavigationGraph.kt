@@ -19,6 +19,7 @@ import com.example.wastelessapp.screens.HomeScreen
 import com.example.wastelessapp.screens.SettingsScreen
 import com.example.wastelessapp.screens.ShoppingListScreen
 import com.example.wastelessapp.screens.StatisticsScreen
+import com.example.wastelessapp.screens.VideoScreen
 
 @Composable
 fun NavigationGraph(
@@ -76,6 +77,10 @@ fun NavigationGraph(
 
         composable<AddShoppingListItemScreen> {
             AddShoppingListItemScreen(navController = navController, shoppingCartViewModel, productViewModel)
+        }
+
+        composable<VideoScreen> {
+            VideoScreen(navController)
         }
     }
 }

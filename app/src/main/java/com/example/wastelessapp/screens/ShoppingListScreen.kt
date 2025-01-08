@@ -112,7 +112,9 @@ fun ShoppingListScreen(
                             iconId = item.iconResId,
                         ),
                         onCheck = {
-                            // TODO: ADD
+                            it.isCheckedState = !it.isCheckedState
+                            println("Item checked: ${it.isCheckedState}")
+
 
                         },
                         onDelete = {

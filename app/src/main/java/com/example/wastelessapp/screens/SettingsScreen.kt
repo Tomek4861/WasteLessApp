@@ -132,7 +132,7 @@ fun SettingsScreen() {
                 buttons = NotificationSounds.list,
                 currentlySelected = notificationSound.value,
                 buttonWidth = 90.dp,
-                fontSize = 14.sp,
+                fontSize = 11.sp,
                 onSelected = { selectedSound ->
                     scope.launch {
                         settingsManager.setNotificationSound(selectedSound)
@@ -203,12 +203,12 @@ fun SettingsScreen() {
             modifier = Modifier.fillMaxWidth()
         ) {
             PrimaryButton(
-                text = "Reset App",
+                text = "Test Notification",
                 onClick = {
                     // Temporary notification for testing
                     sendNotification(dataStoreContext, "Your Item is About to Expire! ", "Your milk expires tomorrow. Don't forget to use it!")
                 },
-                width = 220.dp
+                width = 240.dp
             )
         }
 

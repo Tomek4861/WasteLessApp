@@ -112,8 +112,6 @@ fun HomeScreen(
 
     )
     {
-
-
         Spacer(modifier = Modifier.height(16.dp))
 
         Column(
@@ -126,7 +124,6 @@ fun HomeScreen(
         )
         {
 
-
             Text(
                 "Welcome back, Food Saver!",
                 fontWeight = FontWeight.Bold,
@@ -137,8 +134,8 @@ fun HomeScreen(
 
 
             PrimaryButton(
-                text = "Add New Product",
-                onClick = { /*TODO*/ },
+                text = "Add Item",
+                onClick = { navController.navigate(AddInventoryItemScreen) },
                 width = 400.dp,
             )
 
@@ -278,7 +275,7 @@ fun HomeScreen(
                 )
                 {
                     Text(
-                        "Not saved",
+                        "Total Items",
                         fontSize = 12.sp,
                     )
 
@@ -290,7 +287,7 @@ fun HomeScreen(
 
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.knife_fork_icon),
-                        contentDescription = "Not Saved",
+                        contentDescription = "Total items",
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -429,7 +426,7 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
+                    .height(170.dp)
                     .border(
                         BorderStroke(1.dp, color = Color.Gray),
                         shape = RoundedCornerShape(8.dp)
@@ -444,7 +441,23 @@ fun HomeScreen(
                     fontWeight = FontWeight.Normal
                 )
             }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            )
+            {
+                SecondaryButton(text = "Open Educational Video", onClick = {
+                    navController.navigate(VideoScreen)
+                },
+                    width = 300.dp
+                )
+            }
+
         }
+
     }
 }
 

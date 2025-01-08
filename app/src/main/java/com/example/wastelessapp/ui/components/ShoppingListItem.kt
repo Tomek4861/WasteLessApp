@@ -16,6 +16,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -36,7 +39,10 @@ data class ShoppingItem(
     override val unit: ItemUnit,
     override val iconId: Int,
     var isChecked: Boolean = false,
-) : BaseItem(id, name, quantity, unit, iconId)
+) : BaseItem(id, name, quantity, unit, iconId){
+    var isCheckedState by mutableStateOf(isChecked)
+
+}
 
 
 @Composable
@@ -49,7 +55,8 @@ fun ShoppingListItem(
         modifier = Modifier
             .fillMaxWidth()
             .bottomBorder()
-            .padding(4.dp),
+            .padding(4.dp)
+            .background(if (item.isCheckedState) Color.Gray.copy(alpha = 0.5f) else Color.Transparent),
 
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
