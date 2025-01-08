@@ -1,5 +1,12 @@
 package com.example.wastelessapp.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +43,7 @@ object FoodScreen
 
 //private val showAddInventoryItemScreen = mutableStateOf(false)
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun FoodInventoryScreen(
     navController: NavHostController,
@@ -46,9 +54,7 @@ fun FoodInventoryScreen(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround,
-
-
-        )
+    )
     {
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -69,50 +75,55 @@ fun FoodInventoryScreen(
             CustomDropdownMenu(
                 SortType.entries.toTypedArray(),
                 { inventoryItemViewModel.onEvent(InventoryItemEvent.SortProducts(it)) })
-
-
         }
 
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(10.dp)
-
-
-        ) {
-            items(state.inventoryItems) { item ->
-                FoodInventoryItem(
-                    item =
-                    FoodItem(
-                        id = item.id,
-                        name = item.product,
-                        quantity = item.amount,
-                        unit = item.itemUnit,
-                        price = item.price,
-                        expiryDate = convertToLocalDateTime(item.expirationDate),
-                        purchaseDate = convertToLocalDateTime(item.dateAdded),
-                        iconId = item.iconResId,
-                    ),
-                    onCheck = {
-                        inventoryItemViewModel.onEvent(
-                            InventoryItemEvent.UpdateItemState(
-                                item
+        AnimatedContent(
+            label = "",
+            targetState = state.inventoryItems,
+            transitionSpec = {
+                fadeIn() + slideInHorizontally() with fadeOut() + slideOutHorizontally()
+            }
+        ) { animatedItems ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(10.dp)
+            ) {
+                items(animatedItems) { item ->
+                    FoodInventoryItem(
+                        item =
+                        FoodItem(
+                            id = item.id,
+                            name = item.product,
+                            quantity = item.amount,
+                            unit = item.itemUnit,
+                            price = item.price,
+                            expiryDate = convertToLocalDateTime(item.expirationDate),
+                            purchaseDate = convertToLocalDateTime(item.dateAdded),
+                            iconId = item.iconResId,
+                        ),
+                        onCheck = {
+                            inventoryItemViewModel.onEvent(
+                                InventoryItemEvent.UpdateItemState(
+                                    item
+                                )
                             )
-                        )
-                    },
-                    onDelete = {
-                        inventoryItemViewModel.onEvent(
-                            InventoryItemEvent.DeleteInventoryItem(
-                                item
+                        },
+                        onDelete = {
+                            inventoryItemViewModel.onEvent(
+                                InventoryItemEvent.DeleteInventoryItem(
+                                    item
+                                )
                             )
-                        )
-                    }
-                )
+                        }
+                    )
 
+                }
             }
         }
+
+
 
 
 

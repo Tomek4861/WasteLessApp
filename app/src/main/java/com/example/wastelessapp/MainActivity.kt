@@ -140,11 +140,6 @@ class MainActivity : ComponentActivity() {
                     mutableIntStateOf(0)
                 }
 
-//                NavHost(
-//                    navController = navController,
-//                    startDestination =
-//                ) { }
-
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
@@ -156,9 +151,10 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             selectedItemIndex = selectedItemIndex,
                             onItemSelected = { index, route ->
-                                println("Index: $index, Route: $route")
-                                selectedItemIndex = index
-                                navController.navigate(route)
+                                if (selectedItemIndex != index){
+                                    selectedItemIndex = index
+                                    navController.navigate(route)
+                                }
                             }
                         )
                     }
