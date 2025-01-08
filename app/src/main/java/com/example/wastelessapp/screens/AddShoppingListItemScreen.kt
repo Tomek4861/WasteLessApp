@@ -44,12 +44,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavHostController
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemEvent
+import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartEvent
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemState
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import com.example.wastelessapp.database.entities.product.ProductEvent
 import com.example.wastelessapp.database.entities.product.ProductState
 import com.example.wastelessapp.database.entities.product.ProductViewModel
+import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartViewModel
 import com.example.wastelessapp.ui.components.BottomSheet
 import com.example.wastelessapp.ui.components.CustomButton
 import com.example.wastelessapp.ui.components.PrimaryButton
@@ -64,23 +66,23 @@ import java.util.Calendar
 import java.sql.Date
 
 @Serializable
-object AddInventoryItemScreen
+object AddShoppingListItemScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddInventoryItemScreen(
+fun AddShoppingListItemScreen(
     navController: NavHostController,
-    inventoryItemViewModel: InventoryItemViewModel,
+    shoppingCartViewModel: ShoppingCartViewModel,
     productViewModel: ProductViewModel,
+
 ) {
-    val state by inventoryItemViewModel.state.collectAsState()
+    val state by shoppingCartViewModel.state.collectAsState()
     val productState by productViewModel.state.collectAsState()
-    val onEvent = inventoryItemViewModel::onEvent
+    val onEvent = shoppingCartViewModel::onEvent
 
 //    var selectedDate by remember { mutableStateOf("") }
 //    var productName by remember { mutableStateOf("") }
-    var ProductAmountTextState by remember { mutableStateOf(state.amount.toString()) }
-    var PriceTextState by remember { mutableStateOf(state.price.toString()) }
+    var productAmountTextState by remember { mutableStateOf(state.amount.toString()) }
     var errorMessage by remember { mutableStateOf("") }
     var selectedItemUnit by remember { mutableStateOf(state.itemUnit) }
 
@@ -103,7 +105,7 @@ fun AddInventoryItemScreen(
         ) {
 
             Text(
-                text = "Add new Inventory Item",
+                text = "Add new Shopping List Item",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -124,13 +126,13 @@ fun AddInventoryItemScreen(
 
             ) {
 
-                AutoCompleteTextFieldProducts(
+                AutoCompleteTextFieldShoppingList(
                     modifier = Modifier.fillMaxWidth(0.82f),
 
                     onProductSelected = {
-                        onEvent(InventoryItemEvent.SetProduct(it)) },
+                        onEvent(ShoppingCartEvent.SetProduct(it)) },
                     productState=productState,
-                    inventoryItemViewModel=inventoryItemViewModel
+                    viewmodel = shoppingCartViewModel,
                 )
 
                 val sheetState = rememberModalBottomSheetState()
@@ -172,7 +174,7 @@ fun AddInventoryItemScreen(
                     isSelected = selectedItemUnit == ItemUnit.PIECES,
                     onUnitChange = {
                         selectedItemUnit = it
-                        onEvent(InventoryItemEvent.SetUnit(it))
+                        onEvent(ShoppingCartEvent.SetUnit(it))
                     }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -182,7 +184,7 @@ fun AddInventoryItemScreen(
                     isSelected = selectedItemUnit == ItemUnit.GRAMS,
                     onUnitChange = {
                         selectedItemUnit = it
-                        onEvent(InventoryItemEvent.SetUnit(it))
+                        onEvent(ShoppingCartEvent.SetUnit(it))
                     }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -192,7 +194,7 @@ fun AddInventoryItemScreen(
                     isSelected = selectedItemUnit == ItemUnit.KILOGRAMS,
                     onUnitChange = {
                         selectedItemUnit = it
-                        onEvent(InventoryItemEvent.SetUnit(it))
+                        onEvent(ShoppingCartEvent.SetUnit(it))
                     }
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -202,7 +204,7 @@ fun AddInventoryItemScreen(
                     isSelected = selectedItemUnit == ItemUnit.LITERS,
                     onUnitChange = {
                         selectedItemUnit = it
-                        onEvent(InventoryItemEvent.SetUnit(it))
+                        onEvent(ShoppingCartEvent.SetUnit(it))
                     }
                 )
             }
@@ -216,15 +218,15 @@ fun AddInventoryItemScreen(
             )
 
             TextField(
-                value = ProductAmountTextState,
+                value = productAmountTextState,
                 onValueChange = {
                     if(it.isEmpty()) {
-                        ProductAmountTextState = ""
-                        onEvent(InventoryItemEvent.SetAmount(0f))
+                        productAmountTextState = ""
+                        onEvent(ShoppingCartEvent.SetAmount(0f))
                     }
                     else if (it.matches(pattern)) {
-                        ProductAmountTextState = it
-                        onEvent(InventoryItemEvent.SetAmount(it.toFloat()))
+                        productAmountTextState = it
+                        onEvent(ShoppingCartEvent.SetAmount(it.toFloat()))
                     }
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -240,46 +242,7 @@ fun AddInventoryItemScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = "Expiration date",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            )
 
-            DatePickerField(
-                    selectedDate = state.expirationDate.toString(),
-                    onDateSelected = { onEvent(InventoryItemEvent.SetExpirationDate(convertDate(it))) }
-                )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Price",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            )
-
-            TextField(
-                value = PriceTextState,
-                onValueChange = {
-                    if(it.isEmpty()) {
-                        PriceTextState = ""
-                        onEvent(InventoryItemEvent.SetPrice(0f))
-                    }
-                    else if (it.matches(pattern)) {
-                        PriceTextState = it
-                        onEvent(InventoryItemEvent.SetPrice(it.toFloat()))
-                    }
-
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier
-                    .width(250.dp)
-                    .padding(4.dp),
-                label = { Text("Enter product price (optional)", fontSize = 12.sp) }
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = errorMessage,
@@ -295,12 +258,13 @@ fun AddInventoryItemScreen(
                 errorMessage = error(
                     productName = state.product,
                     amount = state.amount.toString(),
-                    expDate = state.expirationDate.toString(),
-                    price = state.price.toString(),
+                    expDate = null,
+                    price = null,
                     productsList = productNames
                 )
 
                 if (errorMessage.isEmpty()) {
+//                if (true) {
 
 //                    onEvent(InventoryItemEvent.SetProduct(productName))
 //                    onEvent(InventoryItemEvent.SetAmount(ProductAmountTextState.text.toFloat()))
@@ -308,9 +272,9 @@ fun AddInventoryItemScreen(
 //                    if (PriceTextState.text.isNotEmpty())
 //                        onEvent(InventoryItemEvent.SetPrice(PriceTextState.text.toFloat()))
 
-                    onEvent(InventoryItemEvent.SaveInventoryItem)
+                    onEvent(ShoppingCartEvent.SaveShoppingCartItem)
 
-                    navController.navigate(FoodScreen)
+                    navController.navigate(ShoppingListScreen)
                 }
             }
                 , width = 400.dp)
@@ -319,16 +283,15 @@ fun AddInventoryItemScreen(
     }
 }
 
-
 @Composable
-fun AutoCompleteTextField(
+fun AutoCompleteTextFieldShoppingList(
     items: List<String>, // List of items for suggestions
     modifier: Modifier = Modifier,
     onItemSelected: (String) -> Unit = {},
-    inventoryItemViewModel: InventoryItemViewModel
+    viewmodel: ShoppingCartViewModel
 ) {
-    val state by inventoryItemViewModel.state.collectAsState()
-    val onEvent = inventoryItemViewModel::onEvent
+    val state by viewmodel.state.collectAsState()
+    val onEvent = viewmodel::onEvent
 
     var textState by remember { mutableStateOf(state.product) }
 
@@ -342,7 +305,7 @@ fun AutoCompleteTextField(
             value = textState,
             onValueChange = {
                 textState = it
-                onEvent(InventoryItemEvent.SetProduct(it))
+                onEvent(ShoppingCartEvent.SetProduct(it))
                 expanded = filteredItems.isNotEmpty() // Show dropdown if there are suggestions
             },
             modifier = Modifier.fillMaxWidth(),
@@ -372,168 +335,20 @@ fun AutoCompleteTextField(
 
 
 @Composable
-fun AutoCompleteTextFieldProducts(
+fun AutoCompleteTextFieldShoppingList(
     onProductSelected: (String) -> Unit,
     productState: ProductState,
-    inventoryItemViewModel: InventoryItemViewModel,
+    viewmodel: ShoppingCartViewModel,
     modifier: Modifier = Modifier
 ) {
     val products = productState.products
     val foodItems: List<String> = products.map { it.name }
-    AutoCompleteTextField(
+    AutoCompleteTextFieldShoppingList(
         items = foodItems,
         modifier = modifier,
         onItemSelected = { selectedItem ->
             onProductSelected(selectedItem)
         },
-        inventoryItemViewModel
+        viewmodel
     )
 }
-
-
-@Composable
-fun UnitOption(
-    text: String,
-    value: ItemUnit,
-    isSelected: Boolean,
-    onUnitChange: (ItemUnit) -> Unit
-) {
-    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surface
-    val contentColor = if (isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.65f)
-    val borderColor = if (isSelected) Color.Transparent else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
-
-    CustomButton(
-        text = text,
-        onClick = { onUnitChange(value) },
-        backgroundColor = backgroundColor,
-        contentColor = contentColor,
-        borderColor = borderColor,
-        width = 75.dp,
-        fontSize = 12.sp
-    )
-}
-
-@Composable
-fun DatePickerField(selectedDate: String, onDateSelected: (String) -> Unit) {
-    val context = LocalContext.current
-    val datePickerState = remember { mutableStateOf(false) }
-
-    if (datePickerState.value) {
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        val datePickerDialog = DatePickerDialog(
-            context,
-            { _, selectedYear, selectedMonth, selectedDay ->
-                val date = "$selectedYear-${selectedMonth + 1}-$selectedDay"
-                onDateSelected(date)
-                datePickerState.value = false
-            },
-            year,
-            month,
-            day
-        )
-
-        datePickerDialog.setOnCancelListener {
-            datePickerState.value = false // Reset state on cancel
-        }
-
-        datePickerDialog.show()
-    }
-
-    Row(
-        modifier = Modifier
-            .clickable { datePickerState.value = true },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = selectedDate.ifEmpty { "Click here to select an expiration date" },
-            fontSize = 12.sp,
-            modifier = Modifier
-                .border(
-                    BorderStroke(1.dp, color = Color.Gray),
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .padding(4.dp)
-
-        )
-    }
-}
-
-fun error(
-    productName: String,
-    amount: String,
-    expDate: String?,
-    price: String?,
-    productsList: List<String>
-): String {
-
-    if (productName.isEmpty() || !productsList.contains(productName)){
-        return "Valid product name is required!"
-    }
-
-    if (amount.isEmpty()){
-        return "Product amount is required!"
-    }
-
-    try {
-        val floatAmount = amount.toFloat()
-        if (floatAmount <= 0){
-            return "Amount can't be negative, zero or empty!"
-        }
-    }
-    catch (e: NumberFormatException) {
-        return "Incorrect amount!"
-    }
-    if (expDate != null){
-    if (expDate.isEmpty()){
-        return "Expiration date is required!"
-    }
-
-    val formatter = DateTimeFormatter.ofPattern("yyyy-M-d").withResolverStyle(ResolverStyle.LENIENT)
-    val expDateParsed = LocalDate.parse(expDate, formatter)
-    val today = LocalDate.now()
-
-    if(expDateParsed.isBefore(today)){
-        return "Expiration date can't be in the past!"
-    }
-        }
-
-    if (price != null && price.isNotEmpty()){
-        try {
-            val intPrice = price.toDouble()
-            if (intPrice < 0){
-                return "Price can't be negative!"
-            }
-        }
-        catch (e: NumberFormatException){
-            return "Incorrect price!"
-        }
-    }
-
-    return ""
-
-}
-
-fun convertDate(date: String): Date {
-    val inputFormats = listOf(
-        DateTimeFormatter.ofPattern("yyyy-M-d"),
-        DateTimeFormatter.ofPattern("yyyy-MM-d"),
-        DateTimeFormatter.ofPattern("yyyy-M-dd"),
-        DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    )
-    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-
-    for (format in inputFormats) {
-        try {
-            val parsedDate = LocalDate.parse(date, format)
-            return Date.valueOf(parsedDate.format(outputFormatter))
-        } catch (e: DateTimeParseException) {
-            // Ignore
-        }
-    }
-    return Date.valueOf("2100-01-01")
-}
-

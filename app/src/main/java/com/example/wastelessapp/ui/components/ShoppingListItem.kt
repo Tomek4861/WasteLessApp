@@ -12,8 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -29,9 +27,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
-import com.example.wastelessapp.ui.components.BaseItem
-
-
 
 
 data class ShoppingItem(
@@ -41,11 +36,15 @@ data class ShoppingItem(
     override val unit: ItemUnit,
     override val iconId: Int,
     var isChecked: Boolean = false,
-): BaseItem(id, name, quantity, unit, iconId)
+) : BaseItem(id, name, quantity, unit, iconId)
 
 
 @Composable
-fun ShoppingListItem(item: ShoppingItem) {
+fun ShoppingListItem(
+    item: ShoppingItem,
+    onCheck: (ShoppingItem) -> Unit,
+    onDelete: (ShoppingItem) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -88,7 +87,7 @@ fun ShoppingListItem(item: ShoppingItem) {
         Spacer(Modifier.weight(1f))
 
         IconButton(
-            onClick = { /* TODO*/ },
+            onClick = { onCheck(item) },
             modifier = Modifier.size(48.dp) // default size
         ) {
             Icon(
@@ -104,7 +103,7 @@ fun ShoppingListItem(item: ShoppingItem) {
 
 
         IconButton(
-            onClick = {  /* TODO*/ },
+            onClick = { onDelete(item) },
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
