@@ -1,5 +1,7 @@
 package com.example.wastelessapp.screens
 
+import android.app.DatePickerDialog
+import androidx.collection.objectIntMap
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,9 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -30,20 +34,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavHostController
+import com.example.wastelessapp.database.entities.inventory_item.InventoryItemEvent
+import com.example.wastelessapp.database.entities.inventory_item.InventoryItemState
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
+import com.example.wastelessapp.database.entities.product.ProductEvent
+import com.example.wastelessapp.database.entities.product.ProductState
+import com.example.wastelessapp.database.entities.product.ProductViewModel
+import com.example.wastelessapp.ui.components.CustomButton
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.SecondaryButton
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.time.format.ResolverStyle
 import java.util.Calendar
+import java.sql.Date
 
 @Serializable
 object AddInventoryItemScreen
@@ -51,16 +64,24 @@ object AddInventoryItemScreen
 @Composable
 fun AddInventoryItemScreen(
     navController: NavHostController,
-    inventoryItemViewModel: InventoryItemViewModel
+    inventoryItemViewModel: InventoryItemViewModel,
+    productViewModel: ProductViewModel,
 ) {
     val state by inventoryItemViewModel.state.collectAsState()
+    val productState by productViewModel.state.collectAsState()
+    val onEvent = inventoryItemViewModel::onEvent
 
-    var selectedDate by remember { mutableStateOf("") }
-    var productName by remember { mutableStateOf("") }
-    var ProductAmountTextState by remember { mutableStateOf(TextFieldValue("")) }
-    var PriceTextState by remember { mutableStateOf(TextFieldValue("")) }
+//    var selectedDate by remember { mutableStateOf("") }
+//    var productName by remember { mutableStateOf("") }
+    var ProductAmountTextState by remember { mutableStateOf(state.amount.toString()) }
+    var PriceTextState by remember { mutableStateOf(state.price.toString()) }
     var errorMessage by remember { mutableStateOf("") }
-    var selectedItemUnit by remember { mutableStateOf(ItemUnit.GRAMS) }
+    var selectedItemUnit by remember { mutableStateOf(state.itemUnit) }
+
+    val products = productState.products
+    val productNames: List<String> = products.map { it.name }
+
+    val pattern = remember { Regex("^\\d*\\.?\\d*\$") }
 
     Column (){
 
@@ -88,11 +109,17 @@ fun AddInventoryItemScreen(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
+
+
             AutoCompleteTextFieldProducts(
-                onProductSelected = { selectedProduct ->
-                    productName = selectedProduct
-                }
+                onProductSelected = {
+                    onEvent(InventoryItemEvent.SetProduct(it)) },
+                productState,
+                inventoryItemViewModel
             )
+
+
+
             Text(
                 text = "Search by name",
                 fontSize = 12.sp
@@ -108,13 +135,45 @@ fun AddInventoryItemScreen(
             Row (
 
             ){
-                UnitOption("g", ItemUnit.GRAMS) { selectedItemUnit = it }
+                UnitOption(
+                    text = "pcs",
+                    value = ItemUnit.PIECES,
+                    isSelected = selectedItemUnit == ItemUnit.PIECES,
+                    onUnitChange = {
+                        selectedItemUnit = it
+                        onEvent(InventoryItemEvent.SetUnit(it))
+                    }
+                )
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("kg", ItemUnit.KILOGRAMS) { selectedItemUnit = it }
+                UnitOption(
+                    text = "g",
+                    value = ItemUnit.GRAMS,
+                    isSelected = selectedItemUnit == ItemUnit.GRAMS,
+                    onUnitChange = {
+                        selectedItemUnit = it
+                        onEvent(InventoryItemEvent.SetUnit(it))
+                    }
+                )
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("l", ItemUnit.LITERS) { selectedItemUnit = it }
+                UnitOption(
+                    text = "kg",
+                    value = ItemUnit.KILOGRAMS,
+                    isSelected = selectedItemUnit == ItemUnit.KILOGRAMS,
+                    onUnitChange = {
+                        selectedItemUnit = it
+                        onEvent(InventoryItemEvent.SetUnit(it))
+                    }
+                )
                 Spacer(modifier = Modifier.width(8.dp))
-                UnitOption("pcs", ItemUnit.PIECES) { selectedItemUnit = it }
+                UnitOption(
+                    text = "l",
+                    value = ItemUnit.LITERS,
+                    isSelected = selectedItemUnit == ItemUnit.LITERS,
+                    onUnitChange = {
+                        selectedItemUnit = it
+                        onEvent(InventoryItemEvent.SetUnit(it))
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -128,8 +187,16 @@ fun AddInventoryItemScreen(
             TextField(
                 value = ProductAmountTextState,
                 onValueChange = {
-                    ProductAmountTextState = it
+                    if(it.isEmpty()) {
+                        ProductAmountTextState = ""
+                        onEvent(InventoryItemEvent.SetAmount(0f))
+                    }
+                    else if (it.matches(pattern)) {
+                        ProductAmountTextState = it
+                        onEvent(InventoryItemEvent.SetAmount(it.toFloat()))
+                    }
                 },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
@@ -149,8 +216,8 @@ fun AddInventoryItemScreen(
             )
 
             DatePickerField(
-                    selectedDate = selectedDate,
-                    onDateSelected = { date -> selectedDate = date }
+                    selectedDate = state.expirationDate.toString(),
+                    onDateSelected = { onEvent(InventoryItemEvent.SetExpirationDate(convertDate(it))) }
                 )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -164,8 +231,17 @@ fun AddInventoryItemScreen(
             TextField(
                 value = PriceTextState,
                 onValueChange = {
-                    PriceTextState = it
+                    if(it.isEmpty()) {
+                        PriceTextState = ""
+                        onEvent(InventoryItemEvent.SetPrice(0f))
+                    }
+                    else if (it.matches(pattern)) {
+                        PriceTextState = it
+                        onEvent(InventoryItemEvent.SetPrice(it.toFloat()))
+                    }
+
                 },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
                     .width(250.dp)
                     .padding(4.dp),
@@ -184,15 +260,25 @@ fun AddInventoryItemScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             PrimaryButton("Add Item", onClick = {
+
                 errorMessage = error(
-                    productName = productName,
-                    amount = ProductAmountTextState.text,
-                    expDate = selectedDate,
-                    price = PriceTextState.text
+                    productName = state.product,
+                    amount = state.amount.toString(),
+                    expDate = state.expirationDate.toString(),
+                    price = state.price.toString(),
+                    productsList = productNames
                 )
 
                 if (errorMessage.isEmpty()) {
-                    // TODO add Item to database
+
+//                    onEvent(InventoryItemEvent.SetProduct(productName))
+//                    onEvent(InventoryItemEvent.SetAmount(ProductAmountTextState.text.toFloat()))
+//                    onEvent(InventoryItemEvent.SetExpirationDate(convertDate(selectedDate)))
+//                    if (PriceTextState.text.isNotEmpty())
+//                        onEvent(InventoryItemEvent.SetPrice(PriceTextState.text.toFloat()))
+
+                    onEvent(InventoryItemEvent.SaveInventoryItem)
+
                     navController.navigate(FoodScreen)
                 }
             }
@@ -207,12 +293,17 @@ fun AddInventoryItemScreen(
 fun AutoCompleteTextField(
     items: List<String>, // List of items for suggestions
     modifier: Modifier = Modifier,
-    onItemSelected: (String) -> Unit = {}
+    onItemSelected: (String) -> Unit = {},
+    inventoryItemViewModel: InventoryItemViewModel
 ) {
-    var textState by remember { mutableStateOf(TextFieldValue("")) }
+    val state by inventoryItemViewModel.state.collectAsState()
+    val onEvent = inventoryItemViewModel::onEvent
+
+    var textState by remember { mutableStateOf(state.product) }
+
     var expanded by remember { mutableStateOf(false) }
-    val filteredItems = remember(textState.text) {
-        items.filter { it.startsWith(textState.text, ignoreCase = true) }
+    val filteredItems = remember(textState) {
+        items.filter { it.startsWith(textState, ignoreCase = true) }
     }
 
     Column(modifier = modifier) {
@@ -220,6 +311,7 @@ fun AutoCompleteTextField(
             value = textState,
             onValueChange = {
                 textState = it
+                onEvent(InventoryItemEvent.SetProduct(it))
                 expanded = filteredItems.isNotEmpty() // Show dropdown if there are suggestions
             },
             modifier = Modifier.fillMaxWidth(),
@@ -234,7 +326,8 @@ fun AutoCompleteTextField(
             filteredItems.forEach { item ->
                 DropdownMenuItem(
                     onClick = {
-                        textState = TextFieldValue(item) // Update text field with selected item
+                        textState = TextFieldValue(item).text // Update text field with selected item
+                        //onEvent(InventoryItemEvent.SetProduct(TextFieldValue(item).text))
                         expanded = false
                         onItemSelected(item) // Notify parent composable of selection
                     },
@@ -248,16 +341,22 @@ fun AutoCompleteTextField(
 
 
 @Composable
-fun AutoCompleteTextFieldProducts(onProductSelected: (String) -> Unit) {
-    val foodItems = listOf("Tomato", "Tuna", "Toast", "Turkey", "Tofu") // TODO change this list to the list of products from db
+fun AutoCompleteTextFieldProducts(
+    onProductSelected: (String) -> Unit,
+    productState: ProductState,
+    inventoryItemViewModel: InventoryItemViewModel
+) {
+    val products = productState.products
+    val foodItems: List<String> = products.map { it.name }
     AutoCompleteTextField(
         items = foodItems,
         modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp),
         onItemSelected = { selectedItem ->
-            onProductSelected(selectedItem) // Notify parent composable of selection
-        }
+            onProductSelected(selectedItem)
+        },
+        inventoryItemViewModel
     )
 }
 
@@ -266,11 +365,17 @@ fun AutoCompleteTextFieldProducts(onProductSelected: (String) -> Unit) {
 fun UnitOption(
     text: String,
     value: ItemUnit,
+    isSelected: Boolean,
     onUnitChange: (ItemUnit) -> Unit
 ) {
-    SecondaryButton(
+    val backgroundColor = if (isSelected) Color.Blue else MaterialTheme.colorScheme.primary
+    val contentColor = if (isSelected) Color.White else MaterialTheme.colorScheme.onPrimary
+
+    CustomButton(
         text = text,
         onClick = { onUnitChange(value) },
+        backgroundColor = backgroundColor,
+        contentColor = contentColor,
         width = 75.dp,
         fontSize = 12.sp
     )
@@ -287,7 +392,7 @@ fun DatePickerField(selectedDate: String, onDateSelected: (String) -> Unit) {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePickerDialog = android.app.DatePickerDialog(
+        val datePickerDialog = DatePickerDialog(
             context,
             { _, selectedYear, selectedMonth, selectedDay ->
                 val date = "$selectedYear-${selectedMonth + 1}-$selectedDay"
@@ -329,11 +434,12 @@ fun error(
     productName: String,
     amount: String,
     expDate: String,
-    price: String
+    price: String,
+    productsList: List<String>
 ): String {
 
-    if (productName.isEmpty()){
-        return "Product name is required!"
+    if (productName.isEmpty() || !productsList.contains(productName)){
+        return "Valid product name is required!"
     }
 
     if (amount.isEmpty()){
@@ -341,9 +447,9 @@ fun error(
     }
 
     try {
-        val intAmount = amount.toInt()
-        if (intAmount < 0){
-            return "Amount can't be negative!"
+        val floatAmount = amount.toFloat()
+        if (floatAmount <= 0){
+            return "Amount can't be negative, zero or empty!"
         }
     }
     catch (e: NumberFormatException) {
@@ -378,4 +484,23 @@ fun error(
 
 }
 
+fun convertDate(date: String): Date {
+    val inputFormats = listOf(
+        DateTimeFormatter.ofPattern("yyyy-M-d"),
+        DateTimeFormatter.ofPattern("yyyy-MM-d"),
+        DateTimeFormatter.ofPattern("yyyy-M-dd"),
+        DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    )
+    val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+    for (format in inputFormats) {
+        try {
+            val parsedDate = LocalDate.parse(date, format)
+            return Date.valueOf(parsedDate.format(outputFormatter))
+        } catch (e: DateTimeParseException) {
+            // Ignore
+        }
+    }
+    return Date.valueOf("2100-01-01")
+}
 

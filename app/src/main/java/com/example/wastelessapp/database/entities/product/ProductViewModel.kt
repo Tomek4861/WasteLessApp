@@ -56,6 +56,7 @@ class ProductViewModel(
                     name = "",
                     iconResId = R.drawable.dish_spoon_knife_icon
                 ) }
+                println("Product saved $product")
             }
 
             is ProductEvent.SetIconResId -> {

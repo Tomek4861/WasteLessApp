@@ -1,5 +1,6 @@
 package com.example.wastelessapp.navigation
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -18,6 +19,7 @@ import com.example.wastelessapp.screens.StatisticsScreen
 
 //!! Send route for navHost/navController everywhere for better navigation
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
@@ -32,13 +34,13 @@ fun NavigationGraph(
         modifier = modifier
     ) {
         composable<HomeScreen> {
-            HomeScreen(inventoryItemViewModel)
+            HomeScreen(inventoryItemViewModel, productViewModel)
         }
         composable<FoodScreen> {
             FoodInventoryScreen(navController = navController, inventoryItemViewModel)
         }
         composable<StatisticsScreen>{
-            StatisticsScreen()
+            StatisticsScreen(inventoryItemViewModel)
         }
         composable<ShoppingListScreen> {
             ShoppingListScreen(shoppingCartViewModel, inventoryItemViewModel)
@@ -47,7 +49,7 @@ fun NavigationGraph(
             SettingsScreen()
         }
         composable<AddInventoryItemScreen> {
-            AddInventoryItemScreen(navController = navController, inventoryItemViewModel)
+            AddInventoryItemScreen(navController = navController, inventoryItemViewModel, productViewModel)
         }
     }
 }

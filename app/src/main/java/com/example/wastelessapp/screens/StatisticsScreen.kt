@@ -1,6 +1,5 @@
 package com.example.wastelessapp.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,21 +14,21 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
+import com.example.wastelessapp.database.entities.inventory_item.ItemState
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
-import com.patrykandpatrick.vico.compose.common.ProvideVicoTheme
-import com.patrykandpatrick.vico.compose.common.VicoTheme
 import com.patrykandpatrick.vico.core.cartesian.CartesianMeasuringContext
 import com.patrykandpatrick.vico.core.cartesian.axis.Axis
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
@@ -38,13 +37,21 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 import kotlinx.serialization.Serializable
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Serializable
 object StatisticsScreen
 
-@Preview
 @Composable
-fun StatisticsScreen() {
+fun StatisticsScreen(
+    inventoryItemViewModel: InventoryItemViewModel
+) {
+
+    val state by inventoryItemViewModel.state.collectAsState()
+
     Column(){
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -66,13 +73,26 @@ fun StatisticsScreen() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            StatisticsRow("Items saved", "98")
+            val savedIn30Days = kotlinx.coroutines.runBlocking {
+                inventoryItemViewModel.countItemsInLast30DaysByState(ItemState.SAVED)
+            }
+            val lostIn30Days = kotlinx.coroutines.runBlocking {
+                inventoryItemViewModel.countItemsInLast30DaysByState(ItemState.EXPIRED)
+            }
+
+            StatisticsRow("Items saved", savedIn30Days.toString())
             HorizontalDivider(thickness = 2.dp)
-            StatisticsRow("Items lost", "2")
+            StatisticsRow("Items lost", lostIn30Days.toString())
             HorizontalDivider(thickness = 2.dp)
-            StatisticsRow("Percentage of items lost", "2.0%")
+            StatisticsRow("Percentage of items lost", (
+                    if(lostIn30Days+savedIn30Days > 0) {
+                BigDecimal(lostIn30Days/(lostIn30Days+savedIn30Days))
+                .setScale(1, RoundingMode.HALF_EVEN)
+            }
+            else 0.0
+                    ).toString() + "%")
             HorizontalDivider(thickness = 2.dp)
-            StatisticsRow("Money lost", "135" + " PLN")
+            //StatisticsRow("Money lost", "135" + " PLN")
             // TODO change values to ones from queries (last month)
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -85,34 +105,68 @@ fun StatisticsScreen() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            StatisticsRow("Items saved", "1576")
+            val savedAtAllTime = kotlinx.coroutines.runBlocking {
+                inventoryItemViewModel.countAllItemsByState(ItemState.SAVED)
+            }
+            val lostAtAllTime = kotlinx.coroutines.runBlocking {
+                inventoryItemViewModel.countAllItemsByState(ItemState.EXPIRED)
+            }
+
+            StatisticsRow("Items saved", savedAtAllTime.toString())
             HorizontalDivider(thickness = 2.dp)
-            StatisticsRow("Items lost", "113")
+            StatisticsRow("Items lost", lostAtAllTime.toString())
             HorizontalDivider(thickness = 2.dp)
-            StatisticsRow("Percentage of items lost", "6.7%")
+            StatisticsRow("Percentage of items lost", (
+                    if(lostAtAllTime+savedAtAllTime > 0) {
+                        BigDecimal(lostAtAllTime/(lostAtAllTime+savedAtAllTime))
+                        .setScale(1, RoundingMode.HALF_EVEN)
+            }
+            else 0.0
+                ).toString() + "%")
             HorizontalDivider(thickness = 2.dp)
-            StatisticsRow("Money lost", "1638" + " PLN")
+            //StatisticsRow("Money lost", "1638" + " PLN")
             // TODO change values to ones from queries (all time)
 
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                "Lost items this year",
+                "Lost items in the last 12 months",
                 fontWeight = FontWeight.Medium,
                 fontSize = 18.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            Chart(listOf(4, 12, 8, 16, 24, 78, 50, 63, 5, 13, 24, 46)) // TODO change this list with a list of actual values from query (lost items)
+            val monthlyStats = kotlinx.coroutines.runBlocking {
+                inventoryItemViewModel.getMonthlyStatistics()
+            }
+
+            // Generate the last 12 months dynamically
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM")
+            val monthsOrder = (0 until 12).map { offset ->
+                LocalDate.now().minusMonths(offset.toLong()).format(formatter)
+            }.reversed()
+
+            val expiredCounts = monthsOrder.map { month ->
+                monthlyStats.find { it.month == month && it.state == "EXPIRED" }?.count ?: 0
+            }
+
+            val startMonth = monthsOrder.first().substring(5, 7).toInt()
+            val monthNumbers = monthsOrder.mapIndexed { index, _ ->
+                startMonth + index
+            }
+
+
+
+            Chart(expiredCounts, monthNumbers)
 
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                "Lost money this year",
-                fontWeight = FontWeight.Medium,
-                fontSize = 18.sp
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Chart(listOf(4, 12, 8, 16, 24, 78, 50, 63, 5, 13, 24, 46)) // TODO change this list with a list of actual values from query (lost money)
+//            Text(
+//                "Lost money this year",
+//                fontWeight = FontWeight.Medium,
+//                fontSize = 18.sp
+//            )
+//            Spacer(modifier = Modifier.height(8.dp))
+//
+//            Chart(listOf(4, 12, 8, 16, 24, 78, 50, 63, 5, 13, 24, 46)) // TODO change this list with a list of actual values from query (lost money)
 
         }
     }
@@ -146,7 +200,8 @@ fun StatisticsRow(
 
 @Composable
 fun Chart(
-    values: Collection<Number>
+    Yvalues: Collection<Number>,
+    Xvalues: Collection<Number>
 ) {
 
     val modelProducer = remember { CartesianChartModelProducer() }
@@ -155,8 +210,8 @@ fun Chart(
         modelProducer.runTransaction {
             columnSeries {
                 series(
-                    y = values,
-                    x = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
+                    y = Yvalues,
+                    x = Xvalues,
                 )
             }
         }
@@ -206,6 +261,6 @@ fun formatter(
     val months = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
 
     val index = value.toInt() - 1
-    return if (index in months.indices) months[index] else ""
+    return months[index%12]
 }
 

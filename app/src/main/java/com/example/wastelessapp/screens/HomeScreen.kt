@@ -19,12 +19,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,9 +37,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
+import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
+import com.example.wastelessapp.database.entities.product.ProductViewModel
+import com.example.wastelessapp.ui.components.BottomSheet
 import com.example.wastelessapp.ui.components.FoodInventoryItem
 import com.example.wastelessapp.ui.components.FoodItem
-import com.example.wastelessapp.ui.components.FoodUnit
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.SecondaryButton
 import kotlinx.serialization.Serializable
@@ -43,12 +50,14 @@ import java.time.LocalDateTime
 @Serializable
 object HomeScreen
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    inventoryItemViewModel: InventoryItemViewModel
+    inventoryItemViewModel: InventoryItemViewModel,
+    productViewModel: ProductViewModel
 ) {
     val state by inventoryItemViewModel.state.collectAsState()
+    val productState by productViewModel.state.collectAsState()
 
     Column(
 
@@ -77,9 +86,19 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            val sheetState = rememberModalBottomSheetState()
+            var isSheetOpen by rememberSaveable { mutableStateOf(false) }
+            BottomSheet(
+                sheetState,
+                isSheetOpen,
+                { isSheetOpen = false },
+                productState,
+                productViewModel::onEvent
+            )
+
             PrimaryButton(
                 text = "Add New Product",
-                onClick = { /*TODO*/ },
+                onClick = { isSheetOpen = true },
                 width = 400.dp,
             )
 
@@ -289,12 +308,15 @@ fun HomeScreen(
                 FoodItem(
                     id = 1,
                     name = "Apple",
-                    quantity = 2,
-                    unit = FoodUnit.PCS,
-                    price = 5.50,
+                    quantity = 2f,
+                    unit = ItemUnit.PIECES,
+                    price = 5.50f,
                     expiryDate = LocalDateTime.now(),
-                    purchaseDate = LocalDateTime.now()
-                )
+                    purchaseDate = LocalDateTime.now(),
+                    iconId = 2131165290,
+                ),
+                onCheck = {},
+                onDelete = {}
             )
 
             Column(
@@ -306,23 +328,29 @@ fun HomeScreen(
                     FoodItem(
                         id = 2,
                         name = "Steak",
-                        quantity = 1,
-                        unit = FoodUnit.PCS,
-                        price = 27.30,
+                        quantity = 1f,
+                        unit = ItemUnit.PIECES,
+                        price = 27.30f,
                         expiryDate = LocalDateTime.now(),
-                        purchaseDate = LocalDateTime.now()
-                    )
+                        purchaseDate = LocalDateTime.now(),
+                        iconId = 2131165290,
+                    ),
+                    onCheck = {},
+                    onDelete = {}
                 )
                 FoodInventoryItem(
                     FoodItem(
                         id = 2,
                         name = "Steak",
-                        quantity = 1,
-                        unit = FoodUnit.PCS,
-                        price = 27.30,
+                        quantity = 1f,
+                        unit = ItemUnit.PIECES,
+                        price = 27.30f,
                         expiryDate = LocalDateTime.now(),
-                        purchaseDate = LocalDateTime.now()
-                    )
+                        purchaseDate = LocalDateTime.now(),
+                        iconId = 2131165290,
+                    ),
+                    onCheck = {},
+                    onDelete = {}
                 )
             }
 

@@ -22,10 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
@@ -33,13 +36,14 @@ import java.time.temporal.ChronoUnit
 data class FoodItem(
     override val id: Int,
     override val name: String,
-    override val quantity: Int,
-    override val unit: FoodUnit,
-    val price: Double,
+    override val quantity: Float,
+    override val unit: ItemUnit,
+    override val iconId: Int,
+    val price: Float?,
     val expiryDate: LocalDateTime,
     val purchaseDate: LocalDateTime,
 
-    ) : BaseItem(id, name, quantity, unit) {
+    ) : BaseItem(id, name, quantity, unit, iconId) {
     fun getDaysLeft(): Int {
         return ChronoUnit.DAYS.between(LocalDateTime.now().toLocalDate(), expiryDate.toLocalDate())
             .toInt()
@@ -76,7 +80,7 @@ data class FoodItem(
 }
 
 @Composable
-fun FoodInventoryItem(item: FoodItem) {
+fun FoodInventoryItem(item: FoodItem, onCheck: (FoodItem) -> Unit, onDelete: (FoodItem) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -90,9 +94,10 @@ fun FoodInventoryItem(item: FoodItem) {
         horizontalArrangement = Arrangement.Start
 
     ) {
+        val iconObj: ImageVector = ImageVector.vectorResource(id = item.iconId)
         Icon(
-            imageVector = item.icon,
-            contentDescription = item.category,
+            imageVector = iconObj,
+            contentDescription = "Item Icon",
 
             modifier = Modifier.size(48.dp)
         )
@@ -130,7 +135,7 @@ fun FoodInventoryItem(item: FoodItem) {
         )
 
         IconButton(
-            onClick = { /* TODO*/ },
+            onClick = { onCheck(item) },
             modifier = Modifier.size(48.dp) // default size
         ) {
             Icon(
@@ -146,7 +151,7 @@ fun FoodInventoryItem(item: FoodItem) {
 
 
         IconButton(
-            onClick = {  /* TODO*/ },
+            onClick = { onDelete(item) },
             modifier = Modifier.size(48.dp)
         ) {
             Icon(
