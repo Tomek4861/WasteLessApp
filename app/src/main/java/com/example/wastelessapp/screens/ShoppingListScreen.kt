@@ -1,5 +1,12 @@
 package com.example.wastelessapp.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +45,7 @@ object ShoppingListScreen
 val horizontalPaddingBetweenButtons = 32.dp
 val buttonWidth = 150.dp
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ShoppingListScreen(
     navController: NavHostController,
@@ -79,41 +87,49 @@ fun ShoppingListScreen(
 
         }
 
+        AnimatedContent(
+            label = "",
+            targetState = shoppingCartState.shoppingCartItems,
+            transitionSpec = {
+                fadeIn() + slideInHorizontally() with fadeOut() + slideOutHorizontally()
+            }
+        ) { animatedItems ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(10.dp)
 
-        LazyColumn(
-//            contentPadding = PaddingValues(bottom = 16.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(10.dp)
+            ) {
+                items(animatedItems) { item ->
+                    ShoppingListItem(
+                        item =
+                        ShoppingItem(
+                            id = item.id,
+                            name = item.product,
+                            quantity = item.amount,
+                            unit = item.itemUnit,
+                            iconId = item.iconResId,
+                        ),
+                        onCheck = {
+                            // TODO: ADD
 
-        ) {
-            items(shoppingCartState.shoppingCartItems) { item ->
-                ShoppingListItem(
-                    item =
-                    ShoppingItem(
-                        id = item.id,
-                        name = item.product,
-                        quantity = item.amount,
-                        unit = item.itemUnit,
-                        iconId = item.iconResId,
-                    ),
-                    onCheck = {
-                        // TODO: ADD
-
-                    },
-                    onDelete = {
-                        shoppingCartViewModel.onEvent(
-                            ShoppingCartEvent.DeleteShoppingCartItem(
-                                item
+                        },
+                        onDelete = {
+                            shoppingCartViewModel.onEvent(
+                                ShoppingCartEvent.DeleteShoppingCartItem(
+                                    item
+                                )
                             )
-                        )
-                    }
-                )
+                        }
+                    )
 
 
+                }
             }
         }
+
+
 
 
         Spacer(modifier = Modifier.height(8.dp))

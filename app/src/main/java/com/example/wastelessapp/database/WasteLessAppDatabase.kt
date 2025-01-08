@@ -135,12 +135,4 @@ val basicProducts = listOf(
     Product(name = "Wedding Cake", iconResId = R.drawable.wedding_cake_icon),
     Product(name = "Pie", iconResId = R.drawable.pie_dish_food_icon),
     Product(name = "Brownie", iconResId = R.drawable.cake_cup_icon),
-
-    Product(name = "Bowl", iconResId = R.drawable.bowl_and_spoon_icon),
-    Product(name = "Dish Cap", iconResId = R.drawable.dish_cap_icon),
-    Product(name = "Dish Set", iconResId = R.drawable.dish_spoon_knife_icon),
-    Product(name = "Restaurant Food", iconResId = R.drawable.food_restaurant_icon),
-    Product(name = "Salt", iconResId = R.drawable.salt_seasoning_icon),
-    Product(name = "Pepper", iconResId = R.drawable.salt_seasoning_icon),
-    Product(name = "Spices", iconResId = R.drawable.salt_seasoning_icon)
 )
