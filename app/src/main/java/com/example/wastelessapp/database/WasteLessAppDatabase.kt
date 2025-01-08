@@ -17,7 +17,7 @@ import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartItem
         Product::class,
         ShoppingCartItem::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(ItemConverters::class)
