@@ -20,14 +20,17 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,9 +50,11 @@ import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import com.example.wastelessapp.database.entities.product.ProductEvent
 import com.example.wastelessapp.database.entities.product.ProductState
 import com.example.wastelessapp.database.entities.product.ProductViewModel
+import com.example.wastelessapp.ui.components.BottomSheet
 import com.example.wastelessapp.ui.components.CustomButton
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.SecondaryButton
+import com.example.wastelessapp.ui.components.SquareIconButton
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -61,6 +66,7 @@ import java.sql.Date
 @Serializable
 object AddInventoryItemScreen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddInventoryItemScreen(
     navController: NavHostController,
@@ -111,16 +117,41 @@ fun AddInventoryItemScreen(
             )
 
 
-            AutoCompleteTextFieldProducts(
-                onProductSelected = {
-                    onEvent(InventoryItemEvent.SetProduct(it)) },
-                productState,
-                inventoryItemViewModel
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth().padding(0.dp)
+
+            ) {
+
+                AutoCompleteTextFieldProducts(
+                    modifier = Modifier.fillMaxWidth(0.82f),
+
+                    onProductSelected = {
+                        onEvent(InventoryItemEvent.SetProduct(it)) },
+                    productState=productState,
+                    inventoryItemViewModel=inventoryItemViewModel
+                )
+
+                val sheetState = rememberModalBottomSheetState()
+                var isSheetOpen by rememberSaveable { mutableStateOf(false) }
+                BottomSheet(
+                    sheetState,
+                    isSheetOpen,
+                    { isSheetOpen = false },
+                    productState,
+                    productViewModel::onEvent
+                )
+
+                SquareIconButton(
+                    onClick = { isSheetOpen = true},
+                )
+
+            }
 
 
 
-            Text(
+                Text(
                 text = "Search by name",
                 fontSize = 12.sp
             )
@@ -344,15 +375,14 @@ fun AutoCompleteTextField(
 fun AutoCompleteTextFieldProducts(
     onProductSelected: (String) -> Unit,
     productState: ProductState,
-    inventoryItemViewModel: InventoryItemViewModel
+    inventoryItemViewModel: InventoryItemViewModel,
+    modifier: Modifier = Modifier
 ) {
     val products = productState.products
     val foodItems: List<String> = products.map { it.name }
     AutoCompleteTextField(
         items = foodItems,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
+        modifier = modifier,
         onItemSelected = { selectedItem ->
             onProductSelected(selectedItem)
         },

@@ -21,7 +21,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
+import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartEvent
+import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartSortType
 import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartViewModel
+import com.example.wastelessapp.ui.components.CustomDropdownMenu
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.ShoppingItem
 import com.example.wastelessapp.ui.components.ShoppingListItem
@@ -67,7 +70,10 @@ fun ShoppingListScreen(
                 modifier = Modifier.padding(start = 3.dp)
 
             )
-//            CustomDropdownMenu(listOf("Expiration", "Alphabetical"), { /*TODO*/ })
+            CustomDropdownMenu(
+                ShoppingCartSortType.entries.toTypedArray(),
+                { shoppingCartViewModel.onEvent(ShoppingCartEvent.SortProducts(it)) })
+
 
         }
 
@@ -88,7 +94,7 @@ fun ShoppingListScreen(
                         name = item.product,
                         quantity = item.amount,
                         unit = item.itemUnit,
-                        iconId = 0, //TODO: Add icon
+                        iconId = item.iconResId,
                     )
                 )
 
@@ -105,7 +111,9 @@ fun ShoppingListScreen(
             ) {
             PrimaryButton(
                 text = "Clear List",
-                onClick = { /*TODO*/ },
+                onClick = {
+                    shoppingCartViewModel.onEvent(ShoppingCartEvent.DeleteAllShoppingCartItems)
+                 },
                 width = buttonWidth
             )
             Spacer(modifier = Modifier.width(horizontalPaddingBetweenButtons))

@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.wastelessapp.database.entities.inventory_item.SortType
+import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartSortType
 
 
 fun formatSortTypeName(name: String): String {
@@ -31,6 +32,45 @@ fun formatSortTypeName(name: String): String {
 fun CustomDropdownMenu(
     options: Array<SortType>,
     onOptionSelected: (SortType) -> Unit,
+    width: Dp = 200.dp,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOption by rememberSaveable { mutableStateOf(options[0]) }
+    Column(
+        modifier = Modifier
+    ) {
+        SecondaryButton(
+            onClick = { expanded = !expanded },
+            text = formatSortTypeName(selectedOption.name),
+            icon = if (expanded) Icons.Default.ArrowDropDown
+            else Icons.Default.ArrowDropDown, //this if statement is necessary for proper arrow display idk why
+            width = width
+        )
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(text = formatSortTypeName(option.name)) },
+                    onClick = {
+                        onOptionSelected(option)
+                        selectedOption = option
+                        expanded = false
+                    },
+
+                    modifier = Modifier.width(width)
+
+                )
+            }
+        }
+    }
+}
+@Composable
+fun CustomDropdownMenu(
+    options: Array<ShoppingCartSortType>,
+    onOptionSelected: (ShoppingCartSortType) -> Unit,
     width: Dp = 200.dp,
 ) {
     var expanded by remember { mutableStateOf(false) }
