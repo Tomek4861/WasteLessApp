@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             WasteLessAppDatabase::class.java,
             "wastelessapp.db"
-        )   .addMigrations(MIGRATION_1_2)
+        )   .fallbackToDestructiveMigration()
             .build()
     }
 

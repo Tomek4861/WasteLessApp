@@ -84,8 +84,13 @@ fun StatisticsScreen(
             HorizontalDivider(thickness = 2.dp)
             StatisticsRow("Items lost", lostIn30Days.toString())
             HorizontalDivider(thickness = 2.dp)
-            StatisticsRow("Percentage of items lost", BigDecimal(lostIn30Days/(lostIn30Days+savedIn30Days))
-                .setScale(1, RoundingMode.HALF_EVEN).toString() + "%")
+            StatisticsRow("Percentage of items lost", (
+                    if(lostIn30Days+savedIn30Days > 0) {
+                BigDecimal(lostIn30Days/(lostIn30Days+savedIn30Days))
+                .setScale(1, RoundingMode.HALF_EVEN)
+            }
+            else 0.0
+                    ).toString() + "%")
             HorizontalDivider(thickness = 2.dp)
             //StatisticsRow("Money lost", "135" + " PLN")
             // TODO change values to ones from queries (last month)
@@ -111,8 +116,13 @@ fun StatisticsScreen(
             HorizontalDivider(thickness = 2.dp)
             StatisticsRow("Items lost", lostAtAllTime.toString())
             HorizontalDivider(thickness = 2.dp)
-            StatisticsRow("Percentage of items lost", BigDecimal(lostAtAllTime/(lostAtAllTime+savedAtAllTime))
-                .setScale(1, RoundingMode.HALF_EVEN).toString() + "%")
+            StatisticsRow("Percentage of items lost", (
+                    if(lostAtAllTime+savedAtAllTime > 0) {
+                        BigDecimal(lostAtAllTime/(lostAtAllTime+savedAtAllTime))
+                        .setScale(1, RoundingMode.HALF_EVEN)
+            }
+            else 0.0
+                ).toString() + "%")
             HorizontalDivider(thickness = 2.dp)
             //StatisticsRow("Money lost", "1638" + " PLN")
             // TODO change values to ones from queries (all time)
