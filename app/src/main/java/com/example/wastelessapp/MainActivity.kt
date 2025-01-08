@@ -47,7 +47,7 @@ import com.example.wastelessapp.ui.theme.WasteLessAppTheme
 
 class MainActivity : ComponentActivity() {
 
-    val MIGRATION_1_2 = object : Migration(1, 2) {
+    val MIGRATION_1_2 = object : Migration(1, 3) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("ALTER TABLE InventoryItem ADD COLUMN iconResId INTEGER NOT NULL DEFAULT 0")
         }
