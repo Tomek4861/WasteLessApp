@@ -16,8 +16,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -32,11 +34,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
+import com.example.wastelessapp.database.entities.inventory_item.ItemState
 import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import com.example.wastelessapp.database.entities.product.ProductViewModel
 import com.example.wastelessapp.ui.components.BottomSheet
@@ -45,7 +50,10 @@ import com.example.wastelessapp.ui.components.FoodItem
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.SecondaryButton
 import kotlinx.serialization.Serializable
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDateTime
+import kotlin.random.Random
 
 @Serializable
 object HomeScreen
@@ -54,10 +62,33 @@ object HomeScreen
 @Composable
 fun HomeScreen(
     inventoryItemViewModel: InventoryItemViewModel,
-    productViewModel: ProductViewModel
+    productViewModel: ProductViewModel,
+    navController: NavController
 ) {
     val state by inventoryItemViewModel.state.collectAsState()
     val productState by productViewModel.state.collectAsState()
+
+    val savedIn30Days = kotlinx.coroutines.runBlocking {
+        inventoryItemViewModel.countItemsInLast30DaysByState(ItemState.SAVED)
+    }
+    val lostIn30Days = kotlinx.coroutines.runBlocking {
+        inventoryItemViewModel.countItemsInLast30DaysByState(ItemState.EXPIRED)
+    }
+    val savedAtAllTime = kotlinx.coroutines.runBlocking {
+        inventoryItemViewModel.countAllItemsByState(ItemState.SAVED)
+    }
+    val lostAtAllTime = kotlinx.coroutines.runBlocking {
+        inventoryItemViewModel.countAllItemsByState(ItemState.EXPIRED)
+    }
+    val tips = listOf("Organize your fridge by grouping similar items together and keeping frequently used foods in front. This way, you’ll avoid forgetting about items in the back and create an efficient system that helps reduce waste and saves money over time.",
+        "Cooking meals in batches not only saves time but also minimizes waste. Prepare larger portions, store them in reusable containers, and enjoy fresh, homemade meals throughout the week without the hassle of cooking every day!",
+        "Repurpose your food scraps creatively—use vegetable peels for broth, stale bread for croutons or breadcrumbs, and overripe fruits for smoothies or baking. Small creative steps like these can reduce waste and add flavor to your meals!",
+        "Avoid impulse buys by planning your shopping trips carefully. Stick to a well-prepared list and resist the urge to overstock your pantry. This keeps your budget under control, ensures you use what you already have, and prevents unnecessary waste.",
+        "Track what’s already in your fridge and pantry before making a shopping list. By knowing what you have, you’ll avoid buying duplicates, keep your food rotation system effective, and make sure nothing goes unused or forgotten.",
+        "Smart storage makes a big difference! Store fruits and vegetables separately, and keep items like herbs in water or wrapped in damp paper towels. Proper storage extends freshness and ensures nothing goes to waste unnecessarily.",
+        "Be mindful of portion sizes while cooking. Preparing just enough ensures everyone is satisfied without leaving excess food behind. If there are leftovers, store them properly for the next meal to enjoy without letting them go to waste.",
+        "To avoid food waste, plan meals for the week using ingredients you already have before shopping. This helps ensure nothing is wasted, and you only buy what you need!",
+    )
 
     Column(
 
@@ -118,7 +149,7 @@ fun HomeScreen(
 
                 SecondaryButton(
                     text = "View Details",
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate(StatisticsScreen) },
                     width = 120.dp,
                 )
 
@@ -145,14 +176,20 @@ fun HomeScreen(
                         fontSize = 12.sp
                     )
                     Text(
-                        "87%",
+                        text = (if(lostIn30Days+savedIn30Days > 0) {
+                            BigDecimal(savedIn30Days*100/(lostIn30Days+savedIn30Days))
+                                .setScale(0, RoundingMode.HALF_EVEN)
+                        }
+                        else 0.0
+                    ).toString() + "%",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        "↗10%",
-                        fontSize = 15.sp
-                    )
+//                    Text(
+//                        "↗10%",
+//                        fontSize = 15.sp
+//                    )
+                    Icon(imageVector = Icons.Filled.ThumbUp, contentDescription = "Thumb Up")
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -175,14 +212,15 @@ fun HomeScreen(
                         fontSize = 12.sp
                     )
                     Text(
-                        "1",
+                        lostIn30Days.toString(),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        "↙50%",
-                        fontSize = 15.sp
-                    )
+//                    Text(
+//                        "↙50%",
+//                        fontSize = 15.sp
+//                    )
+                    Icon(imageVector = Icons.Filled.ThumbUp, contentDescription = "Thumb Down", modifier = Modifier.rotate(180f))
                 }
             }
 
@@ -205,7 +243,7 @@ fun HomeScreen(
 
                 SecondaryButton(
                     text = "View Details",
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate(FoodScreen) },
                     width = 120.dp,
                 )
             }
@@ -233,7 +271,7 @@ fun HomeScreen(
                     )
 
                     Text(
-                        "6",
+                        lostAtAllTime.toString(),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -263,7 +301,7 @@ fun HomeScreen(
                     )
 
                     Text(
-                        "4",
+                        "4", // TODO Change to actual value
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -288,76 +326,76 @@ fun HomeScreen(
                 )
                 {
                     Text(
-                        "Expired",
+                        "All items",
                         fontSize = 12.sp,
                     )
 
                     Text(
-                        "1",
+                        state.inventoryItems.size.toString(),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
 
-                    Icon(imageVector = Icons.Filled.Clear, contentDescription = "Expired")
+                    Icon(imageVector = Icons.Filled.Check, contentDescription = "Expired")
                 }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            FoodInventoryItem(
-                FoodItem(
-                    id = 1,
-                    name = "Apple",
-                    quantity = 2f,
-                    unit = ItemUnit.PIECES,
-                    price = 5.50f,
-                    expiryDate = LocalDateTime.now(),
-                    purchaseDate = LocalDateTime.now(),
-                    iconId = 2131165290,
-                ),
-                onCheck = {},
-                onDelete = {}
-            )
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-            )
-            {
-                FoodInventoryItem(
-                    FoodItem(
-                        id = 2,
-                        name = "Steak",
-                        quantity = 1f,
-                        unit = ItemUnit.PIECES,
-                        price = 27.30f,
-                        expiryDate = LocalDateTime.now(),
-                        purchaseDate = LocalDateTime.now(),
-                        iconId = 2131165290,
-                    ),
-                    onCheck = {},
-                    onDelete = {}
-                )
-                FoodInventoryItem(
-                    FoodItem(
-                        id = 2,
-                        name = "Steak",
-                        quantity = 1f,
-                        unit = ItemUnit.PIECES,
-                        price = 27.30f,
-                        expiryDate = LocalDateTime.now(),
-                        purchaseDate = LocalDateTime.now(),
-                        iconId = 2131165290,
-                    ),
-                    onCheck = {},
-                    onDelete = {}
-                )
-            }
+//            FoodInventoryItem(
+//                FoodItem(
+//                    id = 1,
+//                    name = "Apple",
+//                    quantity = 2f,
+//                    unit = ItemUnit.PIECES,
+//                    price = 5.50f,
+//                    expiryDate = LocalDateTime.now(),
+//                    purchaseDate = LocalDateTime.now(),
+//                    iconId = 2131165290,
+//                ),
+//                onCheck = {},
+//                onDelete = {}
+//            )
+//
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxWidth(1f)
+//            )
+//            {
+//                FoodInventoryItem(
+//                    FoodItem(
+//                        id = 2,
+//                        name = "Steak",
+//                        quantity = 1f,
+//                        unit = ItemUnit.PIECES,
+//                        price = 27.30f,
+//                        expiryDate = LocalDateTime.now(),
+//                        purchaseDate = LocalDateTime.now(),
+//                        iconId = 2131165290,
+//                    ),
+//                    onCheck = {},
+//                    onDelete = {}
+//                )
+//                FoodInventoryItem(
+//                    FoodItem(
+//                        id = 2,
+//                        name = "Steak",
+//                        quantity = 1f,
+//                        unit = ItemUnit.PIECES,
+//                        price = 27.30f,
+//                        expiryDate = LocalDateTime.now(),
+//                        purchaseDate = LocalDateTime.now(),
+//                        iconId = 2131165290,
+//                    ),
+//                    onCheck = {},
+//                    onDelete = {}
+//                )
+//            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Tips How To Save Food",
+                text = "Food saving Tip",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -367,7 +405,7 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
+                    .height(150.dp)
                     .border(
                         BorderStroke(1.dp, color = Color.Gray),
                         shape = RoundedCornerShape(8.dp)
@@ -377,9 +415,7 @@ fun HomeScreen(
             )
             {
                 Text(
-                    text = "To avoid food waste, plan meals for the week using ingredients " +
-                            "you already have before shopping. This helps ensure nothing is wasted, " +
-                            "and you only buy what you need!",
+                    text = tips[Random.nextInt(0, tips.size)],
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal
                 )
