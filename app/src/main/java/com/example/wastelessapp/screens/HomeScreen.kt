@@ -117,19 +117,10 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            val sheetState = rememberModalBottomSheetState()
-            var isSheetOpen by rememberSaveable { mutableStateOf(false) }
-            BottomSheet(
-                sheetState,
-                isSheetOpen,
-                { isSheetOpen = false },
-                productState,
-                productViewModel::onEvent
-            )
 
             PrimaryButton(
                 text = "Add New Product",
-                onClick = { isSheetOpen = true },
+                onClick = { /*TODO*/ },
                 width = 400.dp,
             )
 
