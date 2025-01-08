@@ -80,7 +80,7 @@ data class FoodItem(
 }
 
 @Composable
-fun FoodInventoryItem(item: FoodItem, onCheck: (FoodItem) -> Unit, onDelete: (FoodItem) -> Unit) {
+    fun FoodInventoryItem(item: FoodItem, onCheck: (FoodItem) -> Unit, onDelete: (FoodItem) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

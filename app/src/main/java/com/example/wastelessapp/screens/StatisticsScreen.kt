@@ -163,15 +163,15 @@ fun StatisticsScreen(
 
             Chart(expiredCounts, monthNumbers)
 
-            Spacer(modifier = Modifier.height(16.dp))
+//            Spacer(modifier = Modifier.height(16.dp))
 //            Text(
-//                "Lost money this year",
+//                "Lost money in the last 12 months",
 //                fontWeight = FontWeight.Medium,
 //                fontSize = 18.sp
 //            )
 //            Spacer(modifier = Modifier.height(8.dp))
 //
-//            Chart(listOf(4, 12, 8, 16, 24, 78, 50, 63, 5, 13, 24, 46)) // TODO change this list with a list of actual values from query (lost money)
+//            Chart(listOf(4, 12, 8, 16, 24, 78, 50, 63, 5, 13, 24, 46), monthNumbers) // TODO change this list with a list of actual values from query (lost money)
 
         }
     }

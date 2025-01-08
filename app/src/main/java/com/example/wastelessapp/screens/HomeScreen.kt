@@ -1,5 +1,8 @@
 package com.example.wastelessapp.screens
 
+import android.content.Context
+import android.net.Uri
+import android.widget.VideoView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -36,10 +39,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.wastelessapp.R
@@ -118,8 +123,6 @@ fun HomeScreen(
 
     )
     {
-
-
         Spacer(modifier = Modifier.height(16.dp))
 
         Column(
@@ -132,7 +135,6 @@ fun HomeScreen(
         )
         {
 
-
             Text(
                 "Welcome back, Food Saver!",
                 fontWeight = FontWeight.Bold,
@@ -143,8 +145,8 @@ fun HomeScreen(
 
 
             PrimaryButton(
-                text = "Add New Product",
-                onClick = { /*TODO*/ },
+                text = "Add Item",
+                onClick = { navController.navigate(AddInventoryItemScreen) },
                 width = 400.dp,
             )
 
@@ -435,7 +437,7 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
+                    .height(170.dp)
                     .border(
                         BorderStroke(1.dp, color = Color.Gray),
                         shape = RoundedCornerShape(8.dp)
@@ -450,7 +452,21 @@ fun HomeScreen(
                     fontWeight = FontWeight.Normal
                 )
             }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            )
+            {
+                SecondaryButton(text = "Open Video", onClick = {
+                    navController.navigate(VideoScreen)
+                })
+            }
+
         }
+
     }
 }
 
@@ -504,4 +520,8 @@ fun ExpirationListItem(
     )
 
     Spacer(modifier = Modifier.height(4.dp))
+
 }
+
+
+
