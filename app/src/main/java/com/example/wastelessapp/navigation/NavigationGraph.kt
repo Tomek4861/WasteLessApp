@@ -12,6 +12,7 @@ import com.example.wastelessapp.database.entities.inventory_item.InventoryItemVi
 import com.example.wastelessapp.database.entities.product.ProductViewModel
 import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartViewModel
 import com.example.wastelessapp.screens.AddInventoryItemScreen
+import com.example.wastelessapp.screens.AddShoppingListItemScreen
 import com.example.wastelessapp.screens.FoodInventoryScreen
 import com.example.wastelessapp.screens.FoodScreen
 import com.example.wastelessapp.screens.HomeScreen
@@ -60,7 +61,7 @@ fun NavigationGraph(
             StatisticsScreen(inventoryItemViewModel)
         }
         composable<ShoppingListScreen> {
-            ShoppingListScreen(shoppingCartViewModel, inventoryItemViewModel)
+            ShoppingListScreen(navController, shoppingCartViewModel, inventoryItemViewModel)
         }
         composable<SettingsScreen> {
             SettingsScreen()
@@ -71,6 +72,10 @@ fun NavigationGraph(
                 inventoryItemViewModel,
                 productViewModel
             )
+        }
+
+        composable<AddShoppingListItemScreen> {
+            AddShoppingListItemScreen(navController = navController, shoppingCartViewModel, productViewModel)
         }
     }
 }

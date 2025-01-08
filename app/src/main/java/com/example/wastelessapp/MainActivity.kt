@@ -26,6 +26,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.wastelessapp.database.WasteLessAppDatabase
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.product.ProductViewModel
@@ -46,12 +48,7 @@ import com.example.wastelessapp.ui.theme.WasteLessAppTheme
 class MainActivity : ComponentActivity() {
 
     private val db by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            WasteLessAppDatabase::class.java,
-            "wastelessapp.db"
-        )   .fallbackToDestructiveMigration()
-            .build()
+        WasteLessAppDatabase.getInstance(applicationContext)
     }
 
     private val productViewModel by viewModels<ProductViewModel>(
@@ -78,7 +75,11 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return InventoryItemViewModel(db.inventoryItemDao, db.shoppingCartDao, db.productDao) as T
+                    return InventoryItemViewModel(
+                        db.inventoryItemDao,
+                        db.shoppingCartDao,
+                        db.productDao
+                    ) as T
                 }
             }
         }

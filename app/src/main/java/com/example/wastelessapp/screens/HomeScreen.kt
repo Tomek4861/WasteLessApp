@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.wastelessapp.R
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.inventory_item.ItemState
@@ -61,7 +62,7 @@ object HomeScreen
 fun HomeScreen(
     inventoryItemViewModel: InventoryItemViewModel,
     productViewModel: ProductViewModel,
-    navController: NavController
+    navController: NavHostController
 ) {
     val state by inventoryItemViewModel.state.collectAsState()
     val productState by productViewModel.state.collectAsState()
