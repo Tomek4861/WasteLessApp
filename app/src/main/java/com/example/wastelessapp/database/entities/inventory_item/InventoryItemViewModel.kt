@@ -200,4 +200,12 @@ class InventoryItemViewModel(
     suspend fun getAllTimeMoneyLost(): Float {
         return dao.getMoneyLostAllTime()
     }
+
+    suspend fun getItemsExpiringSoon(): Int {
+        return dao.countItemsExpiringSoon()
+    }
+
+    suspend fun getExpiredActiveItems(): Int {
+        return dao.countExpiredActiveItems()
+    }
 }

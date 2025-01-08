@@ -84,4 +84,21 @@ interface InventoryItemDao {
     """)
     suspend fun getMoneyLostAllTime(state: ItemState = ItemState.EXPIRED): Float
 
+    @Query("""
+    SELECT COUNT(*)
+    FROM InventoryItem
+    WHERE state = :state 
+    AND (expirationDate = DATE('now') OR expirationDate = DATE('now', '+1 day'))
+""")
+    suspend fun countItemsExpiringSoon(state: ItemState = ItemState.ACTIVE): Int
+
+    @Query("""
+    SELECT COUNT(*)
+    FROM InventoryItem
+    WHERE expirationDate < DATE('now')
+    AND state = :state
+""")
+    suspend fun countExpiredActiveItems(state: ItemState = ItemState.ACTIVE): Int
+
+
 }

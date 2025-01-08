@@ -11,13 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.Warning
@@ -36,23 +35,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.wastelessapp.R
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.inventory_item.ItemState
-import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
 import com.example.wastelessapp.database.entities.product.ProductViewModel
 import com.example.wastelessapp.ui.components.BottomSheet
-import com.example.wastelessapp.ui.components.FoodInventoryItem
-import com.example.wastelessapp.ui.components.FoodItem
 import com.example.wastelessapp.ui.components.PrimaryButton
 import com.example.wastelessapp.ui.components.SecondaryButton
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.LocalDateTime
 import kotlin.random.Random
 
 @Serializable
@@ -80,7 +78,17 @@ fun HomeScreen(
     val lostAtAllTime = kotlinx.coroutines.runBlocking {
         inventoryItemViewModel.countAllItemsByState(ItemState.EXPIRED)
     }
-    val tips = listOf("Organize your fridge by grouping similar items together and keeping frequently used foods in front. This way, you’ll avoid forgetting about items in the back and create an efficient system that helps reduce waste and saves money over time.",
+    val activeProducts = kotlinx.coroutines.runBlocking {
+        inventoryItemViewModel.countAllItemsByState(ItemState.ACTIVE)
+    }
+    val expiringSoonItems = kotlinx.coroutines.runBlocking {
+        inventoryItemViewModel.getItemsExpiringSoon()
+    }
+    val expiredActiveItems = kotlinx.coroutines.runBlocking {
+        inventoryItemViewModel.getExpiredActiveItems()
+    }
+    val tips = listOf(
+        "Organize your fridge by grouping similar items together and keeping frequently used foods in front. This way, you’ll avoid forgetting about items in the back and create an efficient system that helps reduce waste and saves money over time.",
         "Cooking meals in batches not only saves time but also minimizes waste. Prepare larger portions, store them in reusable containers, and enjoy fresh, homemade meals throughout the week without the hassle of cooking every day!",
         "Repurpose your food scraps creatively—use vegetable peels for broth, stale bread for croutons or breadcrumbs, and overripe fruits for smoothies or baking. Small creative steps like these can reduce waste and add flavor to your meals!",
         "Avoid impulse buys by planning your shopping trips carefully. Stick to a well-prepared list and resist the urge to overstock your pantry. This keeps your budget under control, ensures you use what you already have, and prevents unnecessary waste.",
@@ -167,12 +175,11 @@ fun HomeScreen(
                         fontSize = 12.sp
                     )
                     Text(
-                        text = (if(lostIn30Days+savedIn30Days > 0) {
-                            BigDecimal(savedIn30Days*100/(lostIn30Days+savedIn30Days))
+                        text = (if (lostIn30Days + savedIn30Days > 0) {
+                            BigDecimal(savedIn30Days * 100 / (lostIn30Days + savedIn30Days))
                                 .setScale(0, RoundingMode.HALF_EVEN)
-                        }
-                        else 0.0
-                    ).toString() + "%",
+                        } else 0.0
+                                ).toString() + "%",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -211,7 +218,11 @@ fun HomeScreen(
 //                        "↙50%",
 //                        fontSize = 15.sp
 //                    )
-                    Icon(imageVector = Icons.Filled.ThumbUp, contentDescription = "Thumb Down", modifier = Modifier.rotate(180f))
+                    Icon(
+                        imageVector = Icons.Filled.ThumbUp,
+                        contentDescription = "Thumb Down",
+                        modifier = Modifier.rotate(180f)
+                    )
                 }
             }
 
@@ -262,12 +273,16 @@ fun HomeScreen(
                     )
 
                     Text(
-                        lostAtAllTime.toString(),
+                        activeProducts.toString(),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
 
-                    Icon(imageVector = Icons.Filled.Clear, contentDescription = "Not Saved")
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.knife_fork_icon),
+                        contentDescription = "Not Saved",
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -292,12 +307,16 @@ fun HomeScreen(
                     )
 
                     Text(
-                        "4", // TODO Change to actual value
+                        expiringSoonItems.toString(),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
 
-                    Icon(imageVector = Icons.Filled.Warning, contentDescription = "Expire soon")
+                    Icon(
+                        imageVector = Icons.Filled.Warning,
+                        contentDescription = "Expire soon",
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -317,17 +336,21 @@ fun HomeScreen(
                 )
                 {
                     Text(
-                        "All items",
+                        "Expired",
                         fontSize = 12.sp,
                     )
 
                     Text(
-                        state.inventoryItems.size.toString(),
+                        expiredActiveItems.toString(),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
 
-                    Icon(imageVector = Icons.Filled.Check, contentDescription = "Expired")
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.recycle_bin_icon),
+                        contentDescription = "Expired",
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
             }
 
