@@ -96,6 +96,21 @@ fun HomeScreen(
         "Smart storage makes a big difference! Store fruits and vegetables separately, and keep items like herbs in water or wrapped in damp paper towels. Proper storage extends freshness and ensures nothing goes to waste unnecessarily.",
         "Be mindful of portion sizes while cooking. Preparing just enough ensures everyone is satisfied without leaving excess food behind. If there are leftovers, store them properly for the next meal to enjoy without letting them go to waste.",
         "To avoid food waste, plan meals for the week using ingredients you already have before shopping. This helps ensure nothing is wasted, and you only buy what you need!",
+        "Use labels and markers to write the date of purchase or preparation on containers and leftovers. This helps you track freshness and prioritize eating items before they expire.",
+        "Organize your fridge and pantry with the FIFO (First In, First Out) method: move older items to the front and new ones to the back. This way, you’ll use up older products first, reducing the chance of spoilage.",
+        "If you’ve made too much or can’t finish certain items, freeze them in portioned containers. Freezing preserves food longer and allows you to enjoy it later without waste.",
+        "Choose 'imperfect' fruits and vegetables at the store or market. These items taste the same but often go unsold, contributing to waste. Plus, they’re often cheaper!",
+        "Dedicate one day a week to using up leftovers and items nearing expiration. Get creative by making soups, stir-fries, or casseroles with whatever you have on hand.",
+        "Set up a compost bin for peels, cores, and other scraps you can’t use. Composting reduces waste and creates nutrient-rich soil for gardening.",
+        "Learn simple preservation techniques like pickling, drying, or fermenting. For example, turn cucumbers into pickles or make dried herbs to store longer.",
+        "Divide large snack packages into smaller, reusable containers or bags to control portions and prevent overeating. This minimizes leftovers and keeps food fresh.",
+        "If you have too much of something, share it with friends, family, or neighbors. Sharing helps ensure food doesn’t go to waste and fosters community bonds.",
+        "Set your fridge to 37°F (3°C) and freezer to 0°F (-18°C) to keep food fresh longer. Proper temperatures prevent spoilage and ensure safety.",
+        "Check expiration dates regularly and prioritize using items that are closest to their best-before date. Plan recipes around these items to reduce waste.",
+        "Bring reusable bags, jars, and containers for bulk shopping. This minimizes packaging waste and helps you buy just the right amount of what you need.",
+        "Transform leftovers into something new! For example, use last night’s roasted chicken in a sandwich or salad, or turn rice into fried rice with veggies.",
+        "Look for zero-waste recipe ideas that use every part of an ingredient. For instance, make pesto from carrot tops or chips from potato peels.",
+        "If you find yourself with more food than you can use, donate non-perishable items to food banks or shelters to help others while reducing waste."
     )
 
     Column(
