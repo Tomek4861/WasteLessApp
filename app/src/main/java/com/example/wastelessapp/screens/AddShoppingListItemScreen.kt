@@ -1,10 +1,5 @@
 package com.example.wastelessapp.screens
 
-import android.app.DatePickerDialog
-import androidx.collection.objectIntMap
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,13 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -35,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -43,27 +35,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavHostController
-import com.example.wastelessapp.database.entities.inventory_item.InventoryItemEvent
-import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartEvent
-import com.example.wastelessapp.database.entities.inventory_item.InventoryItemState
-import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
-import com.example.wastelessapp.database.entities.product.ProductEvent
 import com.example.wastelessapp.database.entities.product.ProductState
 import com.example.wastelessapp.database.entities.product.ProductViewModel
+import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartEvent
 import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartViewModel
 import com.example.wastelessapp.ui.components.BottomSheet
-import com.example.wastelessapp.ui.components.CustomButton
 import com.example.wastelessapp.ui.components.PrimaryButton
-import com.example.wastelessapp.ui.components.SecondaryButton
 import com.example.wastelessapp.ui.components.SquareIconButton
 import kotlinx.serialization.Serializable
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
-import java.time.format.ResolverStyle
-import java.util.Calendar
-import java.sql.Date
 
 @Serializable
 object AddShoppingListItemScreen

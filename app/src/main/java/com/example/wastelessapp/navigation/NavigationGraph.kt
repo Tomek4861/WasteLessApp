@@ -1,9 +1,10 @@
 package com.example.wastelessapp.navigation
 
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,9 +21,6 @@ import com.example.wastelessapp.screens.ShoppingListScreen
 import com.example.wastelessapp.screens.StatisticsScreen
 import com.example.wastelessapp.screens.VideoScreen
 
-//!! Send route for navHost/navController everywhere for better navigation
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationGraph(
     navController: NavHostController,
@@ -34,7 +32,25 @@ fun NavigationGraph(
     NavHost(
         navController = navController,
         startDestination = HomeScreen,
-        modifier = modifier
+        modifier = modifier,
+//        enterTransition = {
+//            slideInHorizontally(
+//                initialOffsetX = { fullWidth -> fullWidth },
+//                animationSpec = tween(durationMillis = 300)
+//            )
+//        },
+//        exitTransition = {
+//            slideOutHorizontally(
+//                targetOffsetX = { fullWidth -> -fullWidth },
+//                animationSpec = tween(durationMillis = 300)
+//            )
+//        }
+        enterTransition = {
+            fadeIn(animationSpec = tween(200))
+        },
+        exitTransition = {
+            fadeOut(animationSpec = tween(200))
+        }
     ) {
         composable<HomeScreen> {
             HomeScreen(inventoryItemViewModel, productViewModel, navController = navController)
@@ -42,7 +58,7 @@ fun NavigationGraph(
         composable<FoodScreen> {
             FoodInventoryScreen(navController = navController, inventoryItemViewModel)
         }
-        composable<StatisticsScreen>{
+        composable<StatisticsScreen> {
             StatisticsScreen(inventoryItemViewModel)
         }
         composable<ShoppingListScreen> {
@@ -52,7 +68,11 @@ fun NavigationGraph(
             SettingsScreen()
         }
         composable<AddInventoryItemScreen> {
-            AddInventoryItemScreen(navController = navController, inventoryItemViewModel, productViewModel)
+            AddInventoryItemScreen(
+                navController = navController,
+                inventoryItemViewModel,
+                productViewModel
+            )
         }
 
         composable<AddShoppingListItemScreen> {

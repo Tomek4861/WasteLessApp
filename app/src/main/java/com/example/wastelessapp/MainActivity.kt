@@ -25,9 +25,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
-import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.wastelessapp.database.WasteLessAppDatabase
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.product.ProductViewModel
@@ -47,19 +44,8 @@ import com.example.wastelessapp.ui.theme.WasteLessAppTheme
 
 class MainActivity : ComponentActivity() {
 
-    val MIGRATION_1_2 = object : Migration(1, 3) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("ALTER TABLE InventoryItem ADD COLUMN iconResId INTEGER NOT NULL DEFAULT 0")
-        }
-    }
-
     private val db by lazy {
-        Room.databaseBuilder(
-            applicationContext,
-            WasteLessAppDatabase::class.java,
-            "wastelessapp.db"
-        )   .fallbackToDestructiveMigration()
-            .build()
+        WasteLessAppDatabase.getInstance(applicationContext)
     }
 
     private val productViewModel by viewModels<ProductViewModel>(
@@ -86,7 +72,11 @@ class MainActivity : ComponentActivity() {
         factoryProducer = {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return InventoryItemViewModel(db.inventoryItemDao, db.shoppingCartDao, db.productDao) as T
+                    return InventoryItemViewModel(
+                        db.inventoryItemDao,
+                        db.shoppingCartDao,
+                        db.productDao
+                    ) as T
                 }
             }
         }
@@ -150,11 +140,6 @@ class MainActivity : ComponentActivity() {
                     mutableIntStateOf(0)
                 }
 
-//                NavHost(
-//                    navController = navController,
-//                    startDestination =
-//                ) { }
-
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     topBar = {
@@ -166,9 +151,10 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             selectedItemIndex = selectedItemIndex,
                             onItemSelected = { index, route ->
-                                println("Index: $index, Route: $route")
-                                selectedItemIndex = index
-                                navController.navigate(route)
+                                if (selectedItemIndex != index){
+                                    selectedItemIndex = index
+                                    navController.navigate(route)
+                                }
                             }
                         )
                     }
