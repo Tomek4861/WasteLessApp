@@ -90,6 +90,7 @@ dependencies {
     testImplementation(libs.androidx.room.testing)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.animation)
 
     // For Jetpack Compose.
     implementation(libs.compose)
