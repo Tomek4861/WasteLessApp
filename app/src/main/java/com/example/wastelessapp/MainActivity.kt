@@ -25,9 +25,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
-import androidx.room.Room
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.wastelessapp.database.WasteLessAppDatabase
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.product.ProductViewModel

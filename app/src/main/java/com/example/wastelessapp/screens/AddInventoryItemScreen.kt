@@ -1,7 +1,6 @@
 package com.example.wastelessapp.screens
 
 import android.app.DatePickerDialog
-import androidx.collection.objectIntMap
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -44,24 +43,21 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.navigation.NavHostController
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemEvent
-import com.example.wastelessapp.database.entities.inventory_item.InventoryItemState
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.inventory_item.ItemUnit
-import com.example.wastelessapp.database.entities.product.ProductEvent
 import com.example.wastelessapp.database.entities.product.ProductState
 import com.example.wastelessapp.database.entities.product.ProductViewModel
 import com.example.wastelessapp.ui.components.BottomSheet
 import com.example.wastelessapp.ui.components.CustomButton
 import com.example.wastelessapp.ui.components.PrimaryButton
-import com.example.wastelessapp.ui.components.SecondaryButton
 import com.example.wastelessapp.ui.components.SquareIconButton
 import kotlinx.serialization.Serializable
+import java.sql.Date
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.format.ResolverStyle
 import java.util.Calendar
-import java.sql.Date
 
 @Serializable
 object AddInventoryItemScreen
