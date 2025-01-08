@@ -39,7 +39,7 @@ interface InventoryItemDao {
     @Query("""
         SELECT COUNT(*) 
         FROM InventoryItem 
-        WHERE dateAdded >= strftime('%Y-%m-%d', 'now', '-30 days') 
+        WHERE dateAdded >= DATE('now', '-30 days') 
         AND state = :state
     """)
     suspend fun countItemsInLast30DaysByState(state: ItemState): Int
@@ -50,7 +50,7 @@ interface InventoryItemDao {
     @Query("""
         SELECT COUNT(*) 
         FROM InventoryItem 
-        WHERE dateAdded >= strftime('%Y-%m-%d', 'now', '-30 days')
+        WHERE dateAdded >= DATE('now', '-30 days')
     """)
     suspend fun countTotalItemsInLast30Days(): Int
 
@@ -59,14 +59,29 @@ interface InventoryItemDao {
 
     @Query("""
         SELECT 
-            strftime('%Y-%m', dateAdded) AS month,
+            strftime('%Y-%m', expirationDate) AS month,
             state,
             COUNT(*) AS count
         FROM InventoryItem
-        WHERE dateAdded >= strftime('%Y-%m-%d', 'now', '-12 months')
+        WHERE expirationDate >= DATE('now', '-12 months')
         GROUP BY month, state
         ORDER BY month ASC
     """)
     suspend fun getMonthlyStatistics(): List<InventoryItemMonthlyStatistic>
+
+    @Query("""
+        SELECT COALESCE(SUM(price), 0)
+        FROM InventoryItem 
+        WHERE state = :state 
+        AND expirationDate >= DATE('now', '-30 days')
+    """)
+    suspend fun getMoneyLostLastMonth(state: ItemState = ItemState.EXPIRED): Float
+
+    @Query("""
+        SELECT COALESCE(SUM(price), 0)
+        FROM InventoryItem 
+        WHERE state = :state
+    """)
+    suspend fun getMoneyLostAllTime(state: ItemState = ItemState.EXPIRED): Float
 
 }
