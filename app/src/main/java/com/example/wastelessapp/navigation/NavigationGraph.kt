@@ -3,6 +3,7 @@ package com.example.wastelessapp.navigation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,7 +35,7 @@ fun NavigationGraph(
         modifier = modifier
     ) {
         composable<HomeScreen> {
-            HomeScreen(inventoryItemViewModel, productViewModel)
+            HomeScreen(inventoryItemViewModel, productViewModel, navController = navController)
         }
         composable<FoodScreen> {
             FoodInventoryScreen(navController = navController, inventoryItemViewModel)
