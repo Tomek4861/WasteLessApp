@@ -86,7 +86,7 @@ fun StatisticsScreen(
             StatisticsRow("Percentage of items lost", (
                     if(lostIn30Days+savedIn30Days > 0) {
                 BigDecimal(lostIn30Days*100/(lostIn30Days+savedIn30Days))
-                .setScale(1, RoundingMode.HALF_EVEN)
+                .setScale(0, RoundingMode.HALF_EVEN)
             }
             else 0.0
                     ).toString() + "%")
@@ -121,7 +121,7 @@ fun StatisticsScreen(
             StatisticsRow("Percentage of items lost", (
                     if(lostAtAllTime+savedAtAllTime > 0) {
                         BigDecimal(lostAtAllTime*100/(lostAtAllTime+savedAtAllTime))
-                        .setScale(1, RoundingMode.HALF_EVEN)
+                        .setScale(0, RoundingMode.HALF_EVEN)
             }
             else 0.0
                 ).toString() + "%")

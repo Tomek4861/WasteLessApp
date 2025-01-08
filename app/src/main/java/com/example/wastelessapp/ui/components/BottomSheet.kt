@@ -45,6 +45,8 @@ fun BottomSheet(
     onEvent: (ProductEvent) -> Unit
 
 ) {
+    val productNames: List<String> = state.products.map { it.name }
+
     if (isOpen) {
         ModalBottomSheet(
             sheetState = sheetState,
@@ -165,9 +167,10 @@ fun BottomSheet(
                     PrimaryButton(
                         text = "Add Product",
                         onClick = {
-                            onEvent(ProductEvent.SaveProduct)
-                            onDismissRequest()
-                        },
+                            if (state.name.isNotBlank() && !productNames.contains(state.name)) {
+                                onEvent(ProductEvent.SaveProduct)
+                                onDismissRequest()
+                            }                        },
                         width = 220.dp
                     )
                 }

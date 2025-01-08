@@ -286,7 +286,7 @@ fun HomeScreen(
                 )
                 {
                     Text(
-                        "Not saved",
+                        "Total Items",
                         fontSize = 12.sp,
                     )
 
@@ -298,7 +298,7 @@ fun HomeScreen(
 
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.knife_fork_icon),
-                        contentDescription = "Not Saved",
+                        contentDescription = "Total items",
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -460,9 +460,11 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
             )
             {
-                SecondaryButton(text = "Open Video", onClick = {
+                SecondaryButton(text = "Open Educational Video", onClick = {
                     navController.navigate(VideoScreen)
-                })
+                },
+                    width = 300.dp
+                )
             }
 
         }
