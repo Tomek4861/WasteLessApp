@@ -1,5 +1,6 @@
 package com.example.wastelessapp.screens
 
+import android.app.DatePickerDialog
 import androidx.collection.objectIntMap
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -108,12 +109,17 @@ fun AddInventoryItemScreen(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
+
+
             AutoCompleteTextFieldProducts(
-                onProductSelected = { onEvent(InventoryItemEvent.SetProduct(it))
-                },
+                onProductSelected = {
+                    onEvent(InventoryItemEvent.SetProduct(it)) },
                 productState,
                 inventoryItemViewModel
             )
+
+
+
             Text(
                 text = "Search by name",
                 fontSize = 12.sp
@@ -321,7 +327,7 @@ fun AutoCompleteTextField(
                 DropdownMenuItem(
                     onClick = {
                         textState = TextFieldValue(item).text // Update text field with selected item
-                        onEvent(InventoryItemEvent.SetProduct(TextFieldValue(item).text))
+                        //onEvent(InventoryItemEvent.SetProduct(TextFieldValue(item).text))
                         expanded = false
                         onItemSelected(item) // Notify parent composable of selection
                     },
@@ -386,7 +392,7 @@ fun DatePickerField(selectedDate: String, onDateSelected: (String) -> Unit) {
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePickerDialog = android.app.DatePickerDialog(
+        val datePickerDialog = DatePickerDialog(
             context,
             { _, selectedYear, selectedMonth, selectedDay ->
                 val date = "$selectedYear-${selectedMonth + 1}-$selectedDay"

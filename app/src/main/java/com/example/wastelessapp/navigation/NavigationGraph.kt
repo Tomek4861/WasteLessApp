@@ -40,7 +40,7 @@ fun NavigationGraph(
             FoodInventoryScreen(navController = navController, inventoryItemViewModel)
         }
         composable<StatisticsScreen>{
-            StatisticsScreen()
+            StatisticsScreen(inventoryItemViewModel)
         }
         composable<ShoppingListScreen> {
             ShoppingListScreen(shoppingCartViewModel, inventoryItemViewModel)

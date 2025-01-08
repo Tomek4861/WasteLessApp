@@ -21,5 +21,5 @@ interface ProductDao {
     fun getProductsByName(): Flow<List<Product>>
 
     @Query("SELECT iconResId FROM Product WHERE name = :productName LIMIT 1")
-    fun getIconResIdByProductName(productName: String): Int?
+    suspend fun getIconResIdByProductName(productName: String): Int?
 }

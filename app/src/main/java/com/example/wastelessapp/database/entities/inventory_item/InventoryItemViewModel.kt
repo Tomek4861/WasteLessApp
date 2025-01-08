@@ -62,15 +62,16 @@ class InventoryItemViewModel(
                 val expirationDate = state.value.expirationDate
                 val price = state.value.price
 
-                val inventoryItem = InventoryItem(
-                    product = product,
-                    itemUnit = unit,
-                    amount = amount,
-                    expirationDate = expirationDate.toString(),
-                    price = price,
-                    iconResId = productDao.getIconResIdByProductName(product)!!
-                )
                 viewModelScope.launch {
+                    val inventoryItem = InventoryItem(
+                        product = product,
+                        itemUnit = unit,
+                        amount = amount,
+                        expirationDate = expirationDate.toString(),
+                        price = price,
+                        iconResId = productDao.getIconResIdByProductName(product)!!
+                    )
+
                     dao.upsertInventoryItem(inventoryItem)
 
                     if (state.value.shoppingCartItemToMove != null){
