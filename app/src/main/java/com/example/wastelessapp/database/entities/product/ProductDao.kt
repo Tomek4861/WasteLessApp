@@ -2,6 +2,8 @@ package com.example.wastelessapp.database.entities.product
 
 import androidx.room.Dao
 import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
@@ -22,4 +24,7 @@ interface ProductDao {
 
     @Query("SELECT iconResId FROM Product WHERE name = :productName LIMIT 1")
     suspend fun getIconResIdByProductName(productName: String): Int?
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(products: List<Product>)
 }
