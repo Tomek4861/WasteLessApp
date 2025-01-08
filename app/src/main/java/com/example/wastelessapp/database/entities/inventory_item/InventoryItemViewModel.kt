@@ -192,4 +192,20 @@ class InventoryItemViewModel(
     suspend fun getMonthlyStatistics(): List<InventoryItemMonthlyStatistic> {
         return dao.getMonthlyStatistics()
     }
+
+    suspend fun getLastMonthMoneyLost(): Float {
+        return dao.getMoneyLostLastMonth()
+    }
+
+    suspend fun getAllTimeMoneyLost(): Float {
+        return dao.getMoneyLostAllTime()
+    }
+
+    suspend fun getItemsExpiringSoon(): Int {
+        return dao.countItemsExpiringSoon()
+    }
+
+    suspend fun getExpiredActiveItems(): Int {
+        return dao.countExpiredActiveItems()
+    }
 }

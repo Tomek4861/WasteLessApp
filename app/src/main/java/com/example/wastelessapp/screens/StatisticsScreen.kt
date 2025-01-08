@@ -34,7 +34,6 @@ import com.patrykandpatrick.vico.core.cartesian.axis.Axis
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 import kotlinx.serialization.Serializable
 import java.math.BigDecimal
@@ -92,8 +91,11 @@ fun StatisticsScreen(
             else 0.0
                     ).toString() + "%")
             HorizontalDivider(thickness = 2.dp)
-            //StatisticsRow("Money lost", "135" + " PLN")
-            // TODO change values to ones from queries (last month)
+
+            val lastMonthMoneyLost = kotlinx.coroutines.runBlocking {
+                inventoryItemViewModel.getLastMonthMoneyLost()
+            }
+            StatisticsRow("Money lost", "$lastMonthMoneyLost PLN")
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -124,8 +126,11 @@ fun StatisticsScreen(
             else 0.0
                 ).toString() + "%")
             HorizontalDivider(thickness = 2.dp)
-            //StatisticsRow("Money lost", "1638" + " PLN")
-            // TODO change values to ones from queries (all time)
+
+            val allTimeMoneyLost = kotlinx.coroutines.runBlocking {
+                inventoryItemViewModel.getAllTimeMoneyLost()
+            }
+            StatisticsRow("Money lost", "$allTimeMoneyLost PLN")
 
             Spacer(modifier = Modifier.height(16.dp))
             Text(
@@ -221,7 +226,7 @@ fun Chart(
         chart = rememberCartesianChart(
             rememberColumnCartesianLayer(),
             startAxis = VerticalAxis.rememberStart(),
-            bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = CartesianValueFormatter {context, value, verticalAxisPosition ->
+            bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = { context, value, verticalAxisPosition ->
                 formatter(context, value, verticalAxisPosition) }),
         ),
         modelProducer,
