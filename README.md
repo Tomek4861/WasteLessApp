@@ -40,22 +40,22 @@ The Waste Less App is our project designed to help tackle the problem of food wa
 ## How It Looks
 
 ### Home Screen
-![Home Screen](https://github.com/user-attachments/assets/256da692-b939-4322-9579-08ddd0a98f23)
+<img src="https://github.com/user-attachments/assets/256da692-b939-4322-9579-08ddd0a98f23" alt="Home Screen" width="300"/>
 
 ### Food Inventory
-![Food Screen](https://github.com/user-attachments/assets/d26973f4-ce0a-459f-87c1-23498a35f6bc)
+<img src="https://github.com/user-attachments/assets/d26973f4-ce0a-459f-87c1-23498a35f6bc" alt="Food Screen" width="300"/>
 
 ### Statistics
-![Statistics Screen](https://github.com/user-attachments/assets/d38b018f-0eab-497b-a9b4-6b84bc503a11)
+<img src="https://github.com/user-attachments/assets/d38b018f-0eab-497b-a9b4-6b84bc503a11" alt="Statistics Screen" width="300"/>
 
 ### Shopping List
-![Shopping List Screen](https://github.com/user-attachments/assets/a10b9acb-6ee8-4531-855c-6c6b99ad6547)
+<img src="https://github.com/user-attachments/assets/a10b9acb-6ee8-4531-855c-6c6b99ad6547" alt="Shopping List Screen" width="300"/>
 
 ### Settings
-![Settings Screen](https://github.com/user-attachments/assets/b7006e0f-50ab-4672-975d-eb8d36efd776)
+<img src="https://github.com/user-attachments/assets/b7006e0f-50ab-4672-975d-eb8d36efd776" alt="Settings Screen" width="300"/>
 
 ### Dark Mode
-![Dark Mode](https://github.com/user-attachments/assets/1802443d-b094-49cd-9ce2-5c4960398aaa)
+<img src="https://github.com/user-attachments/assets/1802443d-b094-49cd-9ce2-5c4960398aaa" alt="Dark Mode" width="300"/>
 
 
 
