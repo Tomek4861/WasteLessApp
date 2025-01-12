@@ -103,3 +103,9 @@ Contributions are welcome! Feel free to fork the repository and submit a pull re
 This project is licensed under the Prosperity Public License. See the [LICENSE](LICENSE.md) file for details.
 
 
+## Authors
+
+- **[Tomek4861](https://github.com/your-github-username)
+- **[HardWak](https://github.com/hardwak)
+- **[DarZen](https://github.com/TheRealDarZen)
+
