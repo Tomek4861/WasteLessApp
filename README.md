@@ -105,7 +105,7 @@ This project is licensed under the Prosperity Public License. See the [LICENSE](
 
 ## Authors
 
-- **[Tomek4861](https://github.com/your-github-username)**
+- **[Tomek4861](https://github.com/Tomek4861)**
 - **[HardWak](https://github.com/hardwak)**
 - **[DarZen](https://github.com/TheRealDarZen)**
 
