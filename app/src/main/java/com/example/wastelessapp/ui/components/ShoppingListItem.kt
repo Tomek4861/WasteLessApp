@@ -76,14 +76,14 @@ fun ShoppingListItem(
         ) {
             Text(
                 text = item.name,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Medium, // slight boldness
                 modifier = Modifier
             )
             Text(
                 text = item.getQtyString(),
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 textAlign = TextAlign.Center,
 
                 modifier = Modifier

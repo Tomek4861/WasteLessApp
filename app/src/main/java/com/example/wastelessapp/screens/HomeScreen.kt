@@ -51,7 +51,6 @@ import kotlin.random.Random
 @Serializable
 object HomeScreen
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     inventoryItemViewModel: InventoryItemViewModel,
@@ -363,55 +362,6 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-//            FoodInventoryItem(
-//                FoodItem(
-//                    id = 1,
-//                    name = "Apple",
-//                    quantity = 2f,
-//                    unit = ItemUnit.PIECES,
-//                    price = 5.50f,
-//                    expiryDate = LocalDateTime.now(),
-//                    purchaseDate = LocalDateTime.now(),
-//                    iconId = 2131165290,
-//                ),
-//                onCheck = {},
-//                onDelete = {}
-//            )
-//
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxWidth(1f)
-//            )
-//            {
-//                FoodInventoryItem(
-//                    FoodItem(
-//                        id = 2,
-//                        name = "Steak",
-//                        quantity = 1f,
-//                        unit = ItemUnit.PIECES,
-//                        price = 27.30f,
-//                        expiryDate = LocalDateTime.now(),
-//                        purchaseDate = LocalDateTime.now(),
-//                        iconId = 2131165290,
-//                    ),
-//                    onCheck = {},
-//                    onDelete = {}
-//                )
-//                FoodInventoryItem(
-//                    FoodItem(
-//                        id = 2,
-//                        name = "Steak",
-//                        quantity = 1f,
-//                        unit = ItemUnit.PIECES,
-//                        price = 27.30f,
-//                        expiryDate = LocalDateTime.now(),
-//                        purchaseDate = LocalDateTime.now(),
-//                        iconId = 2131165290,
-//                    ),
-//                    onCheck = {},
-//                    onDelete = {}
-//                )
-//            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -449,9 +399,10 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
             )
             {
-                SecondaryButton(text = "Open Educational Video", onClick = {
-                    navController.navigate(VideoScreen)
-                },
+                SecondaryButton(
+                    text = "Open Educational Video", onClick = {
+                        navController.navigate(VideoScreen)
+                    },
                     width = 300.dp
                 )
             }
