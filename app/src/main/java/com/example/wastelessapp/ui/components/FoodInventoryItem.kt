@@ -109,14 +109,14 @@ data class FoodItem(
         ) {
             Text(
                 text = item.name,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 textAlign = TextAlign.Left,
                 fontWeight = FontWeight.Medium, // slight boldness
                 modifier = Modifier
             )
             Text(
                 text = item.getQtyString(),
-                fontSize = 16.sp,
+                fontSize = 14.sp,
                 textAlign = TextAlign.Center,
 
                 modifier = Modifier
@@ -127,7 +127,7 @@ data class FoodItem(
         Spacer(Modifier.weight(1f))
         Text(
             text = item.expireMessage(),
-            fontSize = 18.sp,
+            fontSize = 16.sp,
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Medium, // slight boldness
             softWrap = true,
