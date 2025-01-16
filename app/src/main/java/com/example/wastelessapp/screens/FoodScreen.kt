@@ -31,6 +31,7 @@ import androidx.navigation.NavHostController
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemEvent
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.inventory_item.SortType
+import com.example.wastelessapp.database.entities.product.ProductViewModel
 import com.example.wastelessapp.ui.components.CustomDropdownMenu
 import com.example.wastelessapp.ui.components.FoodInventoryItem
 import com.example.wastelessapp.ui.components.FoodItem
@@ -48,7 +49,8 @@ object FoodScreen
 @Composable
 fun FoodInventoryScreen(
     navController: NavHostController,
-    inventoryItemViewModel: InventoryItemViewModel
+    inventoryItemViewModel: InventoryItemViewModel,
+    productViewModel: ProductViewModel
 ) {
     val state by inventoryItemViewModel.state.collectAsState()
 
@@ -57,6 +59,10 @@ fun FoodInventoryScreen(
         verticalArrangement = Arrangement.SpaceAround,
     )
     {
+        if (state.isAddingItem) {
+            AddInventoryItemScreen(navController, inventoryItemViewModel, productViewModel)
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -139,8 +145,9 @@ fun FoodInventoryScreen(
             PrimaryButton(
                 text = "Add Item",
                 onClick = {
-                    //showAddInventoryItemScreen.value = true
-                    navController.navigate(AddInventoryItemScreen)
+                    inventoryItemViewModel.onEvent(
+                        InventoryItemEvent.ShowDialog
+                    )
                 },
                 width = 200.dp,
             )

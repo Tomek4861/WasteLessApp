@@ -1,6 +1,7 @@
 package com.example.wastelessapp.screens
 
 import android.app.DatePickerDialog
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -84,6 +85,10 @@ fun AddInventoryItemScreen(
     val productNames: List<String> = products.map { it.name }
 
     val pattern = remember { Regex("^\\d*\\.?\\d*\$") }
+
+    BackHandler {
+        onEvent(InventoryItemEvent.HideDialog)
+    }
 
     Column (){
 
@@ -305,8 +310,6 @@ fun AddInventoryItemScreen(
 //                        onEvent(InventoryItemEvent.SetPrice(PriceTextState.text.toFloat()))
 
                     onEvent(InventoryItemEvent.SaveInventoryItem)
-
-                    navController.navigate(FoodScreen)
                 }
             }
                 , width = 400.dp)
