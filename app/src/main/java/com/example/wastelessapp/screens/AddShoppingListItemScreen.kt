@@ -1,5 +1,6 @@
 package com.example.wastelessapp.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,7 +56,7 @@ fun AddShoppingListItemScreen(
     shoppingCartViewModel: ShoppingCartViewModel,
     productViewModel: ProductViewModel,
 
-) {
+    ) {
     val state by shoppingCartViewModel.state.collectAsState()
     val productState by productViewModel.state.collectAsState()
     val onEvent = shoppingCartViewModel::onEvent
@@ -71,7 +72,11 @@ fun AddShoppingListItemScreen(
 
     val pattern = remember { Regex("^\\d*\\.?\\d*\$") }
 
-    Column (){
+    BackHandler {
+        onEvent(ShoppingCartEvent.HideDialog)
+    }
+
+    Column {
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -102,7 +107,9 @@ fun AddShoppingListItemScreen(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(0.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp)
 
             ) {
 
@@ -110,8 +117,9 @@ fun AddShoppingListItemScreen(
                     modifier = Modifier.fillMaxWidth(0.82f),
 
                     onProductSelected = {
-                        onEvent(ShoppingCartEvent.SetProduct(it)) },
-                    productState=productState,
+                        onEvent(ShoppingCartEvent.SetProduct(it))
+                    },
+                    productState = productState,
                     viewmodel = shoppingCartViewModel,
                 )
 
@@ -126,14 +134,14 @@ fun AddShoppingListItemScreen(
                 )
 
                 SquareIconButton(
-                    onClick = { isSheetOpen = true},
+                    onClick = { isSheetOpen = true },
                 )
 
             }
 
 
 
-                Text(
+            Text(
                 text = "Search by name",
                 fontSize = 12.sp
             )
@@ -145,9 +153,7 @@ fun AddShoppingListItemScreen(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium
             )
-            Row (
-
-            ){
+            Row {
                 UnitOption(
                     text = "Pcs",
                     value = ItemUnit.PIECES,
@@ -200,11 +206,10 @@ fun AddShoppingListItemScreen(
             TextField(
                 value = productAmountTextState,
                 onValueChange = {
-                    if(it.isEmpty()) {
+                    if (it.isEmpty()) {
                         productAmountTextState = ""
                         onEvent(ShoppingCartEvent.SetAmount(0f))
-                    }
-                    else if (it.matches(pattern)) {
+                    } else if (it.matches(pattern)) {
                         productAmountTextState = it
                         onEvent(ShoppingCartEvent.SetAmount(it.toFloat()))
                     }
@@ -253,11 +258,8 @@ fun AddShoppingListItemScreen(
 //                        onEvent(InventoryItemEvent.SetPrice(PriceTextState.text.toFloat()))
 
                     onEvent(ShoppingCartEvent.SaveShoppingCartItem)
-
-                    navController.navigate(ShoppingListScreen)
                 }
-            }
-                , width = 400.dp)
+            }, width = 400.dp)
 
         }
     }
@@ -300,7 +302,8 @@ fun AutoCompleteTextFieldShoppingList(
             filteredItems.forEach { item ->
                 DropdownMenuItem(
                     onClick = {
-                        textState = TextFieldValue(item).text // Update text field with selected item
+                        textState =
+                            TextFieldValue(item).text // Update text field with selected item
                         //onEvent(InventoryItemEvent.SetProduct(TextFieldValue(item).text))
                         expanded = false
                         onItemSelected(item) // Notify parent composable of selection
@@ -311,7 +314,6 @@ fun AutoCompleteTextFieldShoppingList(
         }
     }
 }
-
 
 
 @Composable

@@ -62,7 +62,7 @@ fun NavigationGraph(
             StatisticsScreen(inventoryItemViewModel)
         }
         composable<ShoppingListScreen> {
-            ShoppingListScreen(navController, shoppingCartViewModel, inventoryItemViewModel)
+            ShoppingListScreen(navController, shoppingCartViewModel, inventoryItemViewModel, productViewModel)
         }
         composable<SettingsScreen> {
             SettingsScreen()
