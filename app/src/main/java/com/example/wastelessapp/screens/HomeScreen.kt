@@ -20,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -38,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.wastelessapp.R
+import com.example.wastelessapp.database.entities.inventory_item.InventoryItemEvent
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.inventory_item.ItemState
 import com.example.wastelessapp.database.entities.product.ProductViewModel
@@ -58,19 +58,12 @@ fun HomeScreen(
     navController: NavHostController
 ) {
     val state by inventoryItemViewModel.state.collectAsState()
-    val productState by productViewModel.state.collectAsState()
 
     val savedIn30Days = kotlinx.coroutines.runBlocking {
         inventoryItemViewModel.countItemsInLast30DaysByState(ItemState.SAVED)
     }
     val lostIn30Days = kotlinx.coroutines.runBlocking {
         inventoryItemViewModel.countItemsInLast30DaysByState(ItemState.EXPIRED)
-    }
-    val savedAtAllTime = kotlinx.coroutines.runBlocking {
-        inventoryItemViewModel.countAllItemsByState(ItemState.SAVED)
-    }
-    val lostAtAllTime = kotlinx.coroutines.runBlocking {
-        inventoryItemViewModel.countAllItemsByState(ItemState.EXPIRED)
     }
     val activeProducts = kotlinx.coroutines.runBlocking {
         inventoryItemViewModel.countAllItemsByState(ItemState.ACTIVE)
@@ -111,6 +104,10 @@ fun HomeScreen(
 
     )
     {
+        if (state.isAddingItem) {
+            AddInventoryItemScreen(navController, inventoryItemViewModel, productViewModel)
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Column(
@@ -134,7 +131,11 @@ fun HomeScreen(
 
             PrimaryButton(
                 text = "Add Item",
-                onClick = { navController.navigate(AddInventoryItemScreen) },
+                onClick = {
+                    inventoryItemViewModel.onEvent(
+                        InventoryItemEvent.ShowDialog
+                    )
+                },
                 width = 400.dp,
             )
 
