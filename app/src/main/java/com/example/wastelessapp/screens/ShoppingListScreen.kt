@@ -29,7 +29,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.wastelessapp.database.entities.inventory_item.InventoryItemEvent
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
+import com.example.wastelessapp.database.entities.product.ProductViewModel
 import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartEvent
 import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartSortType
 import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartViewModel
@@ -51,20 +53,20 @@ val buttonWidth = 150.dp
 fun ShoppingListScreen(
     navController: NavHostController,
     shoppingCartViewModel: ShoppingCartViewModel,
-    inventoryItemViewModel: InventoryItemViewModel
+    inventoryItemViewModel: InventoryItemViewModel,
+    productViewModel: ProductViewModel
 ) {
     val shoppingCartState by shoppingCartViewModel.state.collectAsState()
-
-    //Needed here for method MoveShoppingCartItem
-    val inventoryItemState by inventoryItemViewModel.state.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround,
-
-
         )
     {
+        if (shoppingCartState.isAddingItem) {
+            AddShoppingListItemScreen(navController, shoppingCartViewModel, productViewModel)
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -114,10 +116,12 @@ fun ShoppingListScreen(
                             iconId = item.iconResId,
                         ),
                         onCheck = {
-                            it.isCheckedState = !it.isCheckedState
-                            println("Item checked: ${it.isCheckedState}")
-
-
+                            navController.navigate(FoodScreen)
+                            inventoryItemViewModel.onEvent(
+                                InventoryItemEvent.MoveShoppingCartItem(
+                                    item
+                                )
+                            )
                         },
                         onDelete = {
                             shoppingCartViewModel.onEvent(
@@ -147,13 +151,17 @@ fun ShoppingListScreen(
                 text = "Clear List",
                 onClick = {
                     shoppingCartViewModel.onEvent(ShoppingCartEvent.DeleteAllShoppingCartItems)
-                 },
+                },
                 width = buttonWidth
             )
             Spacer(modifier = Modifier.width(horizontalPaddingBetweenButtons))
             PrimaryButton(
                 text = "Add Item",
-                onClick = { navController.navigate(AddShoppingListItemScreen) },
+                onClick = {
+                    shoppingCartViewModel.onEvent(
+                        ShoppingCartEvent.ShowDialog
+                    )
+                },
                 width = buttonWidth,
             )
 

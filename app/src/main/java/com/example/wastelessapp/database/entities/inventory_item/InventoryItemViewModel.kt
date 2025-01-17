@@ -61,6 +61,13 @@ class InventoryItemViewModel(
                 val amount = state.value.amount
                 val expirationDate = state.value.expirationDate
                 val price = state.value.price
+                val shoppingCartItemToMove = state.value.shoppingCartItemToMove
+
+                if (shoppingCartItemToMove != null){
+                    viewModelScope.launch {
+                        shoppingCartDao.deleteShoppingCartItem(shoppingCartItemToMove)
+                    }
+                }
 
                 viewModelScope.launch {
                     val inventoryItem = InventoryItem(
@@ -73,12 +80,8 @@ class InventoryItemViewModel(
                     )
 
                     dao.upsertInventoryItem(inventoryItem)
-
-                    if (state.value.shoppingCartItemToMove != null){
-                        shoppingCartDao.deleteShoppingCartItem(state.value.shoppingCartItemToMove!!)
-                    }
-
                 }
+
                 _state.update {
                     it.copy(
                         isAddingItem = false,

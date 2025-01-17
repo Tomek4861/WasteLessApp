@@ -151,7 +151,8 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             selectedItemIndex = selectedItemIndex,
                             onItemSelected = { index, route ->
-                                if (selectedItemIndex != index){
+                                val cleanRoute = route.toString().substringBefore("@")
+                                if (navController.currentDestination?.route != cleanRoute){
                                     selectedItemIndex = index
                                     navController.navigate(route)
                                 }
