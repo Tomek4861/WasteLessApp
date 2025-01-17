@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.wastelessapp.database.entities.inventory_item.InventoryItemEvent
 import com.example.wastelessapp.database.entities.inventory_item.InventoryItemViewModel
 import com.example.wastelessapp.database.entities.product.ProductViewModel
 import com.example.wastelessapp.database.entities.shopping_cart.ShoppingCartEvent
@@ -115,10 +116,12 @@ fun ShoppingListScreen(
                             iconId = item.iconResId,
                         ),
                         onCheck = {
-                            it.isCheckedState = !it.isCheckedState
-                            println("Item checked: ${it.isCheckedState}")
-
-
+                            navController.navigate(FoodScreen)
+                            inventoryItemViewModel.onEvent(
+                                InventoryItemEvent.MoveShoppingCartItem(
+                                    item
+                                )
+                            )
                         },
                         onDelete = {
                             shoppingCartViewModel.onEvent(

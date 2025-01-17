@@ -53,7 +53,7 @@ fun NavigationGraph(
         }
     ) {
         composable<HomeScreen> {
-            HomeScreen(inventoryItemViewModel, productViewModel, navController = navController)
+            HomeScreen(inventoryItemViewModel, navController = navController)
         }
         composable<FoodScreen> {
             FoodInventoryScreen(navController = navController, inventoryItemViewModel, productViewModel)
