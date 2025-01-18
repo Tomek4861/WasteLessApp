@@ -105,6 +105,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.animation)
+    implementation("androidx.test:core-ktx:1.6.1")
 
     // For Jetpack Compose.
     implementation(libs.compose)
