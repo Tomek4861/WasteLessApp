@@ -231,7 +231,7 @@ class AllTests {
     @Test
     fun `test getQtyString for liters`() {
         val item = BaseItem(1, "Juice", 1.5f, ItemUnit.LITERS, 0)
-        assertEquals("1.5L", item.getQtyString())
+        assertEquals("1.5l", item.getQtyString())
     }
 
     @Test
