@@ -22,6 +22,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import java.time.LocalDateTime
+import java.time.format.DateTimeParseException
 
 @OptIn(ExperimentalMaterial3Api::class)
 class AllTests {
@@ -36,7 +37,7 @@ class AllTests {
         assertEquals(expected, convertToLocalDateTime(input))
     }
 
-    @Test(expected = java.time.format.DateTimeParseException::class)
+    @Test(expected = DateTimeParseException::class)
     fun `test convert invalid date string throws exception`() {
         val input = "invalid-date"
         convertToLocalDateTime(input)
@@ -219,4 +220,51 @@ class AllTests {
         composeTestRule.onNodeWithText("Yogurt").assertExists()
         composeTestRule.onNodeWithText("Expired 2 days ago").assertExists()
     }
+
+    @Test
+    fun `test getDaysLeft for today`() {
+        val today = LocalDateTime.now()
+        val item = FoodItem(1, "Milk", 1.0f, ItemUnit.LITERS, 0, null, today, today)
+        assertEquals(0, item.getDaysLeft())
+    }
+
+    @Test
+    fun `test getQtyString for liters`() {
+        val item = BaseItem(1, "Juice", 1.5f, ItemUnit.LITERS, 0)
+        assertEquals("1.5L", item.getQtyString())
+    }
+
+    @Test
+    fun `test CustomButton displays text correctly`() {
+        composeTestRule.setContent {
+            CustomButton(
+                text = "Submit",
+                onClick = {},
+                backgroundColor = Color.Green,
+                contentColor = Color.White
+            )
+        }
+        composeTestRule.onNodeWithText("Submit").assertExists()
+    }
+
+    @Test
+    fun `ShoppingListItem triggers onDelete when delete icon clicked`() {
+        val item = ShoppingItem(
+            id = 2,
+            name = "Banana",
+            quantity = 1.0f,
+            unit = ItemUnit.KILOGRAMS,
+            iconId = R.drawable.banana_fruit_icon,
+            isChecked = false
+        )
+        var deletedItem: ShoppingItem? = null
+        composeTestRule.setContent {
+            ShoppingListItem(item = item, onCheck = {}, onDelete = { deletedItem = it })
+        }
+        composeTestRule.onNodeWithContentDescription("Close").performClick()
+        assertEquals(item, deletedItem)
+    }
+
+
+
 }
