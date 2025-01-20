@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 data class InventoryItemState(
     val inventoryItems: List<InventoryItem> = emptyList(),
-    val product: String = "", //TODO check is can be null
+    val product: String = "",
     val itemUnit: ItemUnit = ItemUnit.PIECES,
     val amount: Float = 0f,
     val expirationDate: Date = Date.valueOf(LocalDate.now().toString()),
